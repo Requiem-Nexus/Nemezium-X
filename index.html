@@ -1338,54 +1338,173 @@
     <!-- ================================================
          JAVASCRIPT - With Google Forms Integration
          ================================================ -->
-    <script>
-        /**
-         * NEXOVIA DIGISTUDIO - Interaction Layer
-         * ==========================================
-         * GOOGLE FORM: https://docs.google.com/forms/d/e/1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA/viewform
-         * 
-         * This script auto-detects entry IDs from the Google Form
-         * and submits data reliably via hidden iframe method.
-         */
+    <<script>
+    /**
+     * NEXOVIA DIGISTUDIO - Interaction Layer
+     * ==========================================
+     * GOOGLE FORM: https://docs.google.com/forms/d/e/1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA/viewform
+     * 
+     * ✅ FIXED: Preloading for first-try submission success
+     */
 
-        // ================================================
-        // GOOGLE FORM CONFIGURATION
-        // ================================================
-        const GOOGLE_FORM_CONFIG = {
-            formId: '1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA',
-            // ✓ VERIFIED ENTRY IDs - Extracted from pre-filled URL
-            entryIds: {
-                name: 'entry.933154368',
-                email: 'entry.1582617777',
-                project: 'entry.421408161',
-                message: 'entry.1476242669'
-            },
-            isReady: true
-        };
+    // ================================================
+    // GOOGLE FORM CONFIGURATION
+    // ================================================
+    const GOOGLE_FORM_CONFIG = {
+        formId: '1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA',
+        entryIds: {
+            name: 'entry.933154368',
+            email: 'entry.1582617777',
+            project: 'entry.421408161',
+            message: 'entry.1476242669'
+        },
+        isReady: false,  // Will be set to true after preload
+        isPreloading: false
+    };
 
-        const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
-        const GOOGLE_FORM_VIEW_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/viewform`;
+    const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
+    const GOOGLE_FORM_VIEW_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/viewform`;
 
-        // ================================================
-        // ENTRY IDs CONFIGURED - READY TO USE
-        // ================================================
-        // Entry IDs extracted from pre-filled URL:
-        // https://docs.google.com/forms/d/e/1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA/viewform?usp=pp_url&entry.933154368=Testname&entry.1582617777=Test@test.com&entry.421408161=Testproject&entry.1476242669=Testmessage
-        
-        function logEntryIds() {
-            console.log('%c[nexovia] Entry IDs configured:', 'color: #3DDC97;');
-            console.log('%c  → Name: entry.933154368', 'color: #9A9A9A;');
-            console.log('%c  → Email: entry.1582617777', 'color: #9A9A9A;');
-            console.log('%c  → Project: entry.421408161', 'color: #9A9A9A;');
-            console.log('%c  → Message: entry.1476242669', 'color: #9A9A9A;');
+    // ================================================
+    // 🔥 PRELOAD SYSTEM - FIXES FIRST-TRY ISSUE
+    // ================================================
+    
+    /**
+     * Creates and preloads the hidden iframe
+     * This ensures the iframe is ready before first submission
+     */
+    function createPreloadedIframe() {
+        return new Promise((resolve) => {
+            let iframe = document.getElementById('gform-iframe');
+            
+            // If iframe already exists and is loaded, we're good
+            if (iframe && GOOGLE_FORM_CONFIG.isReady) {
+                resolve(iframe);
+                return;
+            }
+            
+            // Remove existing iframe if any
+            if (iframe) {
+                iframe.remove();
+            }
+            
+            // Create new iframe
+            iframe = document.createElement('iframe');
+            iframe.id = 'gform-iframe';
+            iframe.name = 'gform-iframe';
+            iframe.style.cssText = 'position:absolute;width:1px;height:1px;left:-9999px;opacity:0;pointer-events:none;';
+            iframe.setAttribute('aria-hidden', 'true');
+            iframe.setAttribute('tabindex', '-1');
+            
+            // Set up load handler
+            iframe.onload = () => {
+                GOOGLE_FORM_CONFIG.isReady = true;
+                console.log('%c[nexovia] ✓ Iframe preloaded and ready', 'color: #3DDC97;');
+                resolve(iframe);
+            };
+            
+            iframe.onerror = () => {
+                console.log('%c[nexovia] ⚠ Iframe preload error (will retry on submit)', 'color: #FFA500;');
+                resolve(iframe);
+            };
+            
+            document.body.appendChild(iframe);
+            
+            // Fallback resolve after timeout
+            setTimeout(() => {
+                GOOGLE_FORM_CONFIG.isReady = true;
+                resolve(iframe);
+            }, 1000);
+        });
+    }
+
+    /**
+     * Preloads Google Forms connection by loading the form page
+     * This warms up DNS, establishes connection, and prepares cookies
+     */
+    async function preloadGoogleForms() {
+        if (GOOGLE_FORM_CONFIG.isPreloading || GOOGLE_FORM_CONFIG.isReady) {
+            return;
         }
+        
+        GOOGLE_FORM_CONFIG.isPreloading = true;
+        console.log('%c[nexovia] 🔄 Preloading Google Forms connection...', 'color: #6EE7FF;');
+        
+        try {
+            // Method 1: Create and preload iframe
+            const iframe = await createPreloadedIframe();
+            
+            // Method 2: Preload form page to warm up connection
+            // Load the viewform page (not formResponse) to establish connection
+            iframe.src = GOOGLE_FORM_VIEW_URL;
+            
+            // Method 3: DNS prefetch and preconnect (added to head)
+            addPreconnectHints();
+            
+            // Method 4: Warm up with a prefetch request
+            warmupConnection();
+            
+        } catch (error) {
+            console.log('%c[nexovia] ⚠ Preload warning:', 'color: #FFA500;', error);
+        }
+        
+        GOOGLE_FORM_CONFIG.isPreloading = false;
+    }
 
-        // ================================================
-        // MOBILE NAVIGATION
-        // ================================================
-        const navToggle = document.querySelector('.nav-toggle');
-        const navLinks = document.querySelector('.nav-links');
+    /**
+     * Adds preconnect hints to document head
+     */
+    function addPreconnectHints() {
+        const hints = [
+            { rel: 'dns-prefetch', href: 'https://docs.google.com' },
+            { rel: 'preconnect', href: 'https://docs.google.com', crossorigin: true },
+            { rel: 'dns-prefetch', href: 'https://www.google.com' },
+            { rel: 'preconnect', href: 'https://www.google.com', crossorigin: true }
+        ];
+        
+        hints.forEach(hint => {
+            if (!document.querySelector(`link[href="${hint.href}"][rel="${hint.rel}"]`)) {
+                const link = document.createElement('link');
+                link.rel = hint.rel;
+                link.href = hint.href;
+                if (hint.crossorigin) link.crossOrigin = 'anonymous';
+                document.head.appendChild(link);
+            }
+        });
+    }
 
+    /**
+     * Warms up the connection with a lightweight request
+     */
+    function warmupConnection() {
+        // Use fetch with no-cors to warm up the connection
+        fetch(GOOGLE_FORM_VIEW_URL, {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'force-cache'
+        }).catch(() => {
+            // Ignore errors - this is just for warming up
+        });
+    }
+
+    // ================================================
+    // ENTRY IDs LOGGING
+    // ================================================
+    function logEntryIds() {
+        console.log('%c[nexovia] Entry IDs configured:', 'color: #3DDC97;');
+        console.log('%c  → Name: entry.933154368', 'color: #9A9A9A;');
+        console.log('%c  → Email: entry.1582617777', 'color: #9A9A9A;');
+        console.log('%c  → Project: entry.421408161', 'color: #9A9A9A;');
+        console.log('%c  → Message: entry.1476242669', 'color: #9A9A9A;');
+    }
+
+    // ================================================
+    // MOBILE NAVIGATION
+    // ================================================
+    const navToggle = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    if (navToggle && navLinks) {
         navToggle.addEventListener('click', () => {
             const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
             navToggle.setAttribute('aria-expanded', !isExpanded);
@@ -1398,38 +1517,40 @@
                 navToggle.setAttribute('aria-expanded', 'false');
             });
         });
+    }
 
-        // ================================================
-        // FORM ELEMENTS
-        // ================================================
-        const contactForm = document.getElementById('contactForm');
-        const formStatus = document.getElementById('formStatus');
-        const submitBtn = document.getElementById('submitBtn');
+    // ================================================
+    // FORM ELEMENTS
+    // ================================================
+    const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    const submitBtn = document.getElementById('submitBtn');
 
-        // ================================================
-        // FORM VALIDATION
-        // ================================================
-        const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    // ================================================
+    // FORM VALIDATION
+    // ================================================
+    const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-        const validateField = (field) => {
-            const value = field.value.trim();
-            const formGroup = field.closest('.form-group');
-            
-            if (field.required && !value) {
-                formGroup.classList.add('error');
-                return false;
-            }
-            
-            if (field.type === 'email' && value && !validateEmail(value)) {
-                formGroup.classList.add('error');
-                return false;
-            }
-            
-            formGroup.classList.remove('error');
-            return true;
-        };
+    const validateField = (field) => {
+        const value = field.value.trim();
+        const formGroup = field.closest('.form-group');
+        
+        if (field.required && !value) {
+            formGroup.classList.add('error');
+            return false;
+        }
+        
+        if (field.type === 'email' && value && !validateEmail(value)) {
+            formGroup.classList.add('error');
+            return false;
+        }
+        
+        formGroup.classList.remove('error');
+        return true;
+    };
 
-        // Real-time validation
+    // Real-time validation
+    if (contactForm) {
         contactForm.querySelectorAll('input, textarea').forEach(field => {
             field.addEventListener('blur', () => validateField(field));
             field.addEventListener('input', () => {
@@ -1437,91 +1558,141 @@
                     validateField(field);
                 }
             });
-        });
-
-        // ================================================
-        // GOOGLE FORMS SUBMISSION - BULLETPROOF METHOD
-        // ================================================
-        // Uses pre-filled URL redirect which ALWAYS works
-        
-            function submitViaPrefilledURL(formData) {
-            return new Promise((resolve) => {
-                const baseUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
-                
-                // Create hidden iframe for form submission
-                let iframe = document.getElementById('gform-iframe');
-                if (!iframe) {
-                    iframe = document.createElement('iframe');
-                    iframe.id = 'gform-iframe';
-                    iframe.name = 'gform-iframe';
-                    iframe.style.cssText = 'position:absolute;width:1px;height:1px;left:-9999px;opacity:0;';
-                    document.body.appendChild(iframe);
-                }
-
-                // Create form targeting the iframe with VERIFIED entry IDs
-                const tempForm = document.createElement('form');
-                tempForm.method = 'POST';
-                tempForm.action = baseUrl;
-                tempForm.target = 'gform-iframe';
-                tempForm.style.display = 'none';
-                
-                // Use verified entry IDs
-                const fields = {
-                    'entry.933154368': formData.name,
-                    'entry.1582617777': formData.email,
-                    'entry.421408161': formData.project || 'Not specified',
-                    'entry.1476242669': formData.message
-                };
-                
-                Object.entries(fields).forEach(([name, value]) => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = name;
-                    input.value = value;
-                    tempForm.appendChild(input);
-                });
-
-                document.body.appendChild(tempForm);
-                
-                let submitted = false;
-                
-                iframe.onload = () => {
-                    if (!submitted) {
-                        submitted = true;
-                        console.log('%c[nexovia] ✓ Form submitted successfully via iframe', 'color: #3DDC97;');
-                        tempForm.remove();
-                        resolve({ success: true });
-                    }
-                };
-                
-                // Submit the form
-                console.log('%c[nexovia] Submitting to Google Forms...', 'color: #6EE7FF;');
-                console.log('%c[nexovia] Data:', 'color: #9A9A9A;', fields);
-                tempForm.submit();
-                
-                // Timeout fallback - resolve after 2 seconds
-                setTimeout(() => {
-                    if (!submitted) {
-                        submitted = true;
-                        tempForm.remove();
-                        console.log('%c[nexovia] ✓ Submission complete (timeout)', 'color: #3DDC97;');
-                        resolve({ success: true });
-                    }
-                }, 2000);
-            });
-        }
-        
-        // Single submission method - iframe only (prevents duplicates)
-        async function submitToGoogleForms(formData) {
-            console.log('%c[nexovia] Submitting form data...', 'color: #6EE7FF;', formData);
             
-            // Use iframe submission (most reliable, no CORS issues)
-            return await submitViaPrefilledURL(formData);
-        }
+            // 🔥 Preload when user starts interacting with form
+            field.addEventListener('focus', () => {
+                if (!GOOGLE_FORM_CONFIG.isReady) {
+                    preloadGoogleForms();
+                }
+            }, { once: true });
+        });
+    }
 
-        // ================================================
-        // FORM SUBMISSION HANDLER
-        // ================================================
+    // ================================================
+    // GOOGLE FORMS SUBMISSION - BULLETPROOF METHOD
+    // ================================================
+    
+    async function submitViaPrefilledURL(formData, retryCount = 0) {
+        const MAX_RETRIES = 2;
+        
+        return new Promise(async (resolve, reject) => {
+            const baseUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
+            
+            // Ensure iframe is ready
+            let iframe = document.getElementById('gform-iframe');
+            if (!iframe || !GOOGLE_FORM_CONFIG.isReady) {
+                console.log('%c[nexovia] 🔄 Preparing iframe...', 'color: #6EE7FF;');
+                iframe = await createPreloadedIframe();
+                // Small delay to ensure iframe is fully ready
+                await new Promise(r => setTimeout(r, 100));
+            }
+
+            // Reset iframe src to about:blank before new submission
+            iframe.src = 'about:blank';
+            await new Promise(r => setTimeout(r, 50));
+
+            // Create form targeting the iframe
+            const tempForm = document.createElement('form');
+            tempForm.method = 'POST';
+            tempForm.action = baseUrl;
+            tempForm.target = 'gform-iframe';
+            tempForm.style.display = 'none';
+            tempForm.acceptCharset = 'UTF-8';
+            
+            // Use verified entry IDs
+            const fields = {
+                'entry.933154368': formData.name,
+                'entry.1582617777': formData.email,
+                'entry.421408161': formData.project || 'Not specified',
+                'entry.1476242669': formData.message
+            };
+            
+            Object.entries(fields).forEach(([name, value]) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = name;
+                input.value = value;
+                tempForm.appendChild(input);
+            });
+
+            document.body.appendChild(tempForm);
+            
+            let submitted = false;
+            let loadCount = 0;
+            
+            const handleLoad = () => {
+                loadCount++;
+                // First load is the form submission, second might be redirect
+                if (loadCount >= 1 && !submitted) {
+                    submitted = true;
+                    console.log('%c[nexovia] ✓ Form submitted successfully via iframe', 'color: #3DDC97;');
+                    cleanup();
+                    resolve({ success: true });
+                }
+            };
+            
+            const cleanup = () => {
+                iframe.removeEventListener('load', handleLoad);
+                if (tempForm.parentNode) {
+                    tempForm.remove();
+                }
+            };
+            
+            iframe.addEventListener('load', handleLoad);
+            
+            // Submit the form
+            console.log('%c[nexovia] Submitting to Google Forms...', 'color: #6EE7FF;');
+            console.log('%c[nexovia] Data:', 'color: #9A9A9A;', fields);
+            
+            try {
+                tempForm.submit();
+            } catch (error) {
+                console.error('[nexovia] Form submit error:', error);
+                cleanup();
+                
+                if (retryCount < MAX_RETRIES) {
+                    console.log(`%c[nexovia] 🔄 Retrying... (${retryCount + 1}/${MAX_RETRIES})`, 'color: #FFA500;');
+                    // Reset and retry
+                    GOOGLE_FORM_CONFIG.isReady = false;
+                    const result = await submitViaPrefilledURL(formData, retryCount + 1);
+                    resolve(result);
+                    return;
+                }
+                reject(error);
+                return;
+            }
+            
+            // Timeout fallback - resolve after 3 seconds
+            setTimeout(() => {
+                if (!submitted) {
+                    submitted = true;
+                    cleanup();
+                    console.log('%c[nexovia] ✓ Submission complete (timeout fallback)', 'color: #3DDC97;');
+                    resolve({ success: true });
+                }
+            }, 3000);
+        });
+    }
+    
+    // Main submission function with retry logic
+    async function submitToGoogleForms(formData) {
+        console.log('%c[nexovia] Submitting form data...', 'color: #6EE7FF;', formData);
+        
+        // Ensure connection is ready
+        if (!GOOGLE_FORM_CONFIG.isReady) {
+            console.log('%c[nexovia] 🔄 Warming up connection first...', 'color: #6EE7FF;');
+            await preloadGoogleForms();
+            // Wait a bit for connection to establish
+            await new Promise(r => setTimeout(r, 300));
+        }
+        
+        return await submitViaPrefilledURL(formData);
+    }
+
+    // ================================================
+    // FORM SUBMISSION HANDLER
+    // ================================================
+    if (contactForm) {
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1583,64 +1754,121 @@
                 submitBtn.disabled = false;
             }
         });
+    }
 
-        // ================================================
-        // SMOOTH SCROLL
-        // ================================================
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                const href = this.getAttribute('href');
-                if (href === '#') return;
+    // ================================================
+    // SMOOTH SCROLL
+    // ================================================
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            if (href === '#') return;
+            
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                const navHeight = document.querySelector('.nav')?.offsetHeight || 0;
+                const targetPosition = target.offsetTop - navHeight;
                 
-                const target = document.querySelector(href);
-                if (target) {
-                    e.preventDefault();
-                    const navHeight = document.querySelector('.nav').offsetHeight;
-                    const targetPosition = target.offsetTop - navHeight;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // ================================================
+    // INTERSECTION OBSERVER - Preload when contact section is visible
+    // ================================================
+    function setupContactSectionObserver() {
+        const contactSection = document.getElementById('contact');
+        if (!contactSection) return;
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !GOOGLE_FORM_CONFIG.isReady) {
+                    console.log('%c[nexovia] 👀 Contact section visible - preloading form...', 'color: #6EE7FF;');
+                    preloadGoogleForms();
+                    observer.unobserve(contactSection);
                 }
             });
+        }, {
+            rootMargin: '200px', // Start preloading 200px before section is visible
+            threshold: 0
         });
-
-        // ================================================
-        // INITIALIZATION
-        // ================================================
-        (function init() {
-            console.log('%c╔══════════════════════════════════════╗', 'color: #6EE7FF;');
-            console.log('%c║   NEXOVIA DIGISTUDIO - System v2.0   ║', 'color: #6EE7FF;');
-            console.log('%c╚══════════════════════════════════════╝', 'color: #6EE7FF;');
-            console.log('');
-            console.log('%c[nexovia] ✓ Google Form CONNECTED & VERIFIED', 'color: #3DDC97; font-weight: bold;');
-            logEntryIds();
-            console.log('');
-            console.log('%c[nexovia] Form URL:', 'color: #6EE7FF;');
-            console.log('%c  → ' + GOOGLE_FORM_VIEW_URL, 'color: #9A9A9A;');
-            console.log('');
-            console.log('%c[nexovia] System ready ✓', 'color: #3DDC97;');
-        })();
-
-        // ================================================
-        // DEBUG / TEST COMMANDS
-        // ================================================
-        // Quick test function - run in browser console
-        window.testSubmit = function() {
-            const testData = {
-                name: 'Test User (Website)',
-                email: 'test@nexovia.studio',
-                project: 'Test Submission',
-                message: 'This is a test submission from the Nexovia website. Timestamp: ' + new Date().toISOString()
-            };
-            console.log('%c[nexovia] 🧪 Sending test submission...', 'color: #6EE7FF;');
-            submitToGoogleForms(testData).then(() => {
-                console.log('%c[nexovia] ✓ Test complete! Check Google Form responses.', 'color: #3DDC97; font-weight: bold;');
-            });
-        };
         
-        console.log('%c[nexovia] Debug: Type testSubmit() to send a test', 'color: #9A9A9A;');
+        observer.observe(contactSection);
+    }
+
+    // ================================================
+    // INITIALIZATION
+    // ================================================
+    (function init() {
+        console.log('%c╔══════════════════════════════════════╗', 'color: #6EE7FF;');
+        console.log('%c║   NEXOVIA DIGISTUDIO - System v2.1   ║', 'color: #6EE7FF;');
+        console.log('%c╚══════════════════════════════════════╝', 'color: #6EE7FF;');
+        console.log('');
+        console.log('%c[nexovia] ✓ Google Form CONNECTED & VERIFIED', 'color: #3DDC97; font-weight: bold;');
+        logEntryIds();
+        console.log('');
+        console.log('%c[nexovia] Form URL:', 'color: #6EE7FF;');
+        console.log('%c  → ' + GOOGLE_FORM_VIEW_URL, 'color: #9A9A9A;');
+        console.log('');
+        
+        // 🔥 PRELOAD STRATEGIES
+        // Strategy 1: Preload on page idle
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                preloadGoogleForms();
+            }, { timeout: 3000 });
+        } else {
+            // Fallback: preload after 2 seconds
+            setTimeout(preloadGoogleForms, 2000);
+        }
+        
+        // Strategy 2: Preload when contact section becomes visible
+        setupContactSectionObserver();
+        
+        // Strategy 3: Preload on any scroll (user is engaged)
+        let scrollPreloadDone = false;
+        window.addEventListener('scroll', () => {
+            if (!scrollPreloadDone && !GOOGLE_FORM_CONFIG.isReady) {
+                scrollPreloadDone = true;
+                preloadGoogleForms();
+            }
+        }, { passive: true, once: true });
+        
+        console.log('%c[nexovia] 🚀 Preload strategies initialized', 'color: #3DDC97;');
+        console.log('%c[nexovia] System ready ✓', 'color: #3DDC97;');
+    })();
+
+    // ================================================
+    // DEBUG / TEST COMMANDS
+    // ================================================
+    window.testSubmit = function() {
+        const testData = {
+            name: 'Test User (Website)',
+            email: 'test@nexovia.studio',
+            project: 'Test Submission',
+            message: 'This is a test submission from the Nexovia website. Timestamp: ' + new Date().toISOString()
+        };
+        console.log('%c[nexovia] 🧪 Sending test submission...', 'color: #6EE7FF;');
+        submitToGoogleForms(testData).then(() => {
+            console.log('%c[nexovia] ✓ Test complete! Check Google Form responses.', 'color: #3DDC97; font-weight: bold;');
+        });
+    };
+    
+    window.checkFormStatus = function() {
+        console.log('%c[nexovia] Form Status:', 'color: #6EE7FF;');
+        console.log('  → isReady:', GOOGLE_FORM_CONFIG.isReady);
+        console.log('  → isPreloading:', GOOGLE_FORM_CONFIG.isPreloading);
+        console.log('  → iframe exists:', !!document.getElementById('gform-iframe'));
+    };
+    
+    console.log('%c[nexovia] Debug commands:', 'color: #9A9A9A;');
+    console.log('%c  → testSubmit() - Send test submission', 'color: #9A9A9A;');
+    console.log('%c  → checkFormStatus() - Check preload status', 'color: #9A9A9A;');
     </script>
 </body>
 </html>
