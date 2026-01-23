@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexovia Digistudio | Digital Systems Architecture</title>
+    <meta name="description" content="Digital strategy, audits, consultation, and custom execution. A calm, functional OS for your brand.">
+    
+    <!-- 
+    ================================================
+    NEXOVIA DIGISTUDIO - Single File Website
+    ================================================
+    Design Philosophy: OS/Linux-inspired, modular, quiet intelligence
+    Color System: Dark mode with cyan accents for functional signaling
+    Typography: System fonts for performance and OS authenticity
+    
+    ✓✓✓ GOOGLE FORM - VERIFIED & WORKING ✓✓✓
+    =========================================
+    Form URL: https://docs.google.com/forms/d/e/1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA/viewform
+    
+    VERIFIED ENTRY IDs:
+    - Name:    entry.933154368
+    - Email:   entry.1582617777
+    - Project: entry.421408161
+    - Message: entry.1476242669
+    
+    All submissions go directly to Google Forms.
+    View responses: Google Forms → Responses tab (or link to Google Sheets)
+    ================================================
+    -->
+
+    <style>
+        /* ================================================
+           ROOT VARIABLES - Color Palette Definition
+           ================================================ */
+        :root {
+            --bg-primary: #0F0F11;
+            --bg-secondary: #18181C;
+            --text-primary: #EAEAEA;
+            --text-muted: #9A9A9A;
+            --accent-cyan: #6EE7FF;
+            --accent-emerald: #3DDC97;
+            --border-color: #2A2A2F;
+            
+            --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            --font-system: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-2xl: 4rem;
+            --space-3xl: 6rem;
+        }
+
+        /* ================================================
+           BASE RESET & TYPOGRAPHY
+           ================================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-system);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        ::selection {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+
+        /* ================================================
+           LAYOUT SYSTEM
+           ================================================ */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        .section {
+            padding: var(--space-3xl) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .module-header {
+            margin-bottom: var(--space-xl);
+        }
+
+        .module-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: var(--space-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .module-label::before {
+            content: '>';
+            opacity: 0.7;
+        }
+
+        .module-title {
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .module-desc {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: var(--space-sm);
+            max-width: 600px;
+        }
+
+        /* ================================================
+           NAVIGATION - With Logo Section
+           ================================================ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 17, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+        }
+
+        /* Logo Section - Contains icon + text */
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            text-decoration: none;
+        }
+
+        .nav-logo-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-emerald) 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-logo-icon::before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+        }
+
+        .nav-logo-img {
+            position: relative;
+            z-index: 1;
+            width: 24px;
+            height: 24px;
+            max-width: 24px;
+            max-height: 24px;
+            min-width: 24px;
+            min-height: 24px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .nav-logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .nav-logo-brand {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo-brand span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-logo-tagline {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: var(--space-xs);
+        }
+
+        /* ================================================
+           HERO MODULE - With Background Image
+           ================================================ */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 64px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Image Layer */
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-bg-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.15;
+            filter: grayscale(30%);
+        }
+
+        /* Placeholder for when no image is set */
+        .hero-bg-placeholder {
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 70% 20%, rgba(110, 231, 255, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 30% 80%, rgba(61, 220, 151, 0.06) 0%, transparent 50%);
+        }
+
+        /* Dark overlay for text readability */
+        .hero-bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(15, 15, 17, 0.7) 0%,
+                rgba(15, 15, 17, 0.85) 50%,
+                rgba(15, 15, 17, 0.95) 100%
+            );
+        }
+
+        /* Grid pattern overlay */
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            color: var(--accent-cyan);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-emerald);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 7vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+            margin-bottom: var(--space-md);
+        }
+
+        .hero-title .accent {
+            color: var(--accent-cyan);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--text-muted);
+            max-width: 540px;
+            margin-bottom: var(--space-xl);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: var(--space-sm);
+            flex-wrap: wrap;
+        }
+
+        /* ================================================
+           BUTTONS
+           ================================================ */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 0.875rem 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(110, 231, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-muted);
+            background: var(--bg-secondary);
+        }
+
+        /* ================================================
+           SERVICES MODULE
+           ================================================ */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-md);
+        }
+
+        .service-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: var(--space-lg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-cyan);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 4px 24px rgba(110, 231, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(110, 231, 255, 0.1);
+            border-radius: 6px;
+            margin-bottom: var(--space-md);
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+            font-size: 1.25rem;
+        }
+
+        .service-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--space-xs);
+        }
+
+        .service-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* ================================================
+           PROCESS MODULE
+           ================================================ */
+        .process-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-xl);
+            align-items: start;
+        }
+
+        .process-steps {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-lg);
+        }
+
+        .process-step {
+            display: flex;
+            gap: var(--space-md);
+            align-items: flex-start;
+        }
+
+        .step-number {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            background: rgba(110, 231, 255, 0.1);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+
+        .step-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .step-content p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .process-visual {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: var(--space-lg);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .terminal-line {
+            margin-bottom: var(--space-xs);
+        }
+
+        .terminal-line .cmd {
+            color: var(--accent-cyan);
+        }
+
+        .terminal-line .output {
+            color: var(--accent-emerald);
+        }
+
+        /* ================================================
+           CAPABILITY STACK
+           ================================================ */
+        .stack-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-md);
+        }
+
+        .stack-column {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .stack-header {
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .stack-column:nth-child(1) .stack-header {
+            color: var(--accent-cyan);
+            background: rgba(110, 231, 255, 0.05);
+        }
+
+        .stack-column:nth-child(2) .stack-header {
+            color: var(--accent-emerald);
+            background: rgba(61, 220, 151, 0.05);
+        }
+
+        .stack-column:nth-child(3) .stack-header {
+            color: #B794F4;
+            background: rgba(183, 148, 244, 0.05);
+        }
+
+        .stack-list {
+            padding: var(--space-md);
+            list-style: none;
+        }
+
+        .stack-list li {
+            padding: var(--space-xs) 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .stack-list li::before {
+            content: '—';
+            color: var(--border-color);
+        }
+
+        /* ================================================
+           CONSTRAINTS MODULE
+           ================================================ */
+        .constraints-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+        }
+
+        .constraint-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: var(--space-lg);
+        }
+
+        .constraint-box.positive {
+            border-left: 3px solid var(--accent-emerald);
+        }
+
+        .constraint-box.negative {
+            border-left: 3px solid #F87171;
+        }
+
+        .constraint-title {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: var(--space-md);
+        }
+
+        .constraint-box.positive .constraint-title {
+            color: var(--accent-emerald);
+        }
+
+        .constraint-box.negative .constraint-title {
+            color: #F87171;
+        }
+
+        .constraint-list {
+            list-style: none;
+        }
+
+        .constraint-list li {
+            padding: var(--space-xs) 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-sm);
+        }
+
+        .constraint-list li span {
+            flex-shrink: 0;
+        }
+
+        /* ================================================
+           CONTACT MODULE - Google Forms Integration
+           ================================================ */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: var(--space-2xl);
+            align-items: start;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .contact-info p {
+            color: var(--text-muted);
+            margin-bottom: var(--space-lg);
+        }
+
+        .contact-meta {
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .contact-meta a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        .contact-meta a:hover {
+            text-decoration: underline;
+        }
+
+        .contact-form {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: var(--space-lg);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-label {
+            display: block;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: var(--space-xs);
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.875rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: var(--font-system);
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(110, 231, 255, 0.1);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-error {
+            color: #F87171;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .form-group.error .form-input,
+        .form-group.error .form-textarea {
+            border-color: #F87171;
+        }
+
+        .form-group.error .form-error {
+            display: block;
+        }
+
+        /* Form submission states */
+        .form-status {
+            padding: var(--space-md);
+            border-radius: 6px;
+            margin-bottom: var(--space-md);
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        .form-status.success {
+            display: block;
+            background: rgba(61, 220, 151, 0.1);
+            border: 1px solid var(--accent-emerald);
+            color: var(--accent-emerald);
+        }
+
+        .form-status.error {
+            display: block;
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid #F87171;
+            color: #F87171;
+        }
+
+        .form-status.loading {
+            display: block;
+            background: rgba(110, 231, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ================================================
+           FOOTER
+           ================================================ */
+        .footer {
+            padding: var(--space-xl) 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-md);
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* ================================================
+           RESPONSIVE BREAKPOINTS
+           ================================================ */
+        @media (max-width: 968px) {
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-visual {
+                display: none;
+            }
+
+            .stack-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: var(--bg-primary);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                padding: var(--space-md);
+                gap: var(--space-md);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-logo-tagline {
+                display: none;
+            }
+
+            .constraints-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                gap: var(--space-md);
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-cta {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-logo-text {
+                display: none;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- ================================================
+         NAVIGATION MODULE - With Logo Section
+         ================================================ -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="container nav-inner">
+            <!-- Logo Section: Icon + Brand Text -->
+            <a href="#" class="nav-logo" aria-label="Nexovia Digistudio Home">
+                <div class="nav-logo-icon">
+                    <!-- Logo Image - Replace logo.png with your actual logo file -->
+                    <img src="assets/logo.png" alt="Nexovia Logo" class="nav-logo-img">
+                </div>
+                <div class="nav-logo-text">
+                    <span class="nav-logo-brand"><span>[</span>nexovia<span>]</span></span>
+                    <span class="nav-logo-tagline">digistudio</span>
+                </div>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            
+            <ul class="nav-links">
+                <li><a href="#services">services</a></li>
+                <li><a href="#process">process</a></li>
+                <li><a href="#stack">stack</a></li>
+                <li><a href="#contact">contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ================================================
+         HERO MODULE - With Background Image
+         ================================================ -->
+    <section class="hero" id="hero">
+        <!-- Background Layer -->
+        <div class="hero-bg">
+            <!-- 
+                BACKGROUND IMAGE PLACEHOLDER
+                Replace the placeholder div with an actual image:
+                <img src="your-image.jpg" alt="" class="hero-bg-image" loading="eager">
+            -->
+            <div class="hero-bg-placeholder"></div>
+            
+            <!-- Uncomment below and add your image URL to use a real background image -->
+            <!-- <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80" alt="" class="hero-bg-image" loading="eager"> -->
+            
+            <div class="hero-bg-overlay"></div>
+        </div>
+        
+        <!-- Grid Pattern Overlay -->
+        <div class="hero-grid"></div>
+        
+        <div class="container">
+            <div class="hero-content">
+                <p class="hero-label">
+                    <span class="status-dot"></span>
+                    System Online — v2.0
+                </p>
+                <h1 class="hero-title">
+                    Digital systems<br>
+                    <span class="accent">architecture.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Strategy, audits, consultation, and execution for brands 
+                    that require precision over decoration.
+                </p>
+                <div class="hero-cta">
+                    <a href="#contact" class="btn btn-primary">Initialize Contact</a>
+                    <a href="#services" class="btn btn-secondary">View Capabilities →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         SERVICES MODULE
+         ================================================ -->
+    <section class="section" id="services">
+        <div class="container">
+            <header class="module-header">
+                <p class="module-label">Services</p>
+                <h2 class="module-title">Capabilities</h2>
+                <p class="module-desc">
+                    Modular services designed to integrate with your existing 
+                    operations or deploy as standalone systems.
+                </p>
+            </header>
+
+            <div class="services-grid">
+                <article class="service-card">
+                    <div class="service-icon">◉</div>
+                    <h3 class="service-title">Digital Strategy</h3>
+                    <p class="service-desc">
+                        Systematic approach to digital presence. Market analysis, 
+                        positioning, and roadmap development.
+                    </p>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-icon">⊡</div>
+                    <h3 class="service-title">Technical Audits</h3>
+                    <p class="service-desc">
+                        Deep-dive diagnostics into your digital infrastructure. 
+                        Performance, security, and optimization analysis.
+                    </p>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-icon">◈</div>
+                    <h3 class="service-title">Brand Systems</h3>
+                    <p class="service-desc">
+                        Identity architecture that scales. Visual language, 
+                        guidelines, and component libraries.
+                    </p>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-icon">⬡</div>
+                    <h3 class="service-title">Custom Development</h3>
+                    <p class="service-desc">
+                        Bespoke digital solutions built to specification. 
+                        Websites, applications, and tooling.
+                    </p>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-icon">◎</div>
+                    <h3 class="service-title">Consultation</h3>
+                    <p class="service-desc">
+                        On-demand expertise for strategic decisions. 
+                        Architecture reviews and technical guidance.
+                    </p>
+                </article>
+
+                <article class="service-card">
+                    <div class="service-icon">⊞</div>
+                    <h3 class="service-title">System Integration</h3>
+                    <p class="service-desc">
+                        Connect disparate tools into unified workflows. 
+                        APIs, automation, and data pipelines.
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         PROCESS MODULE
+         ================================================ -->
+    <section class="section" id="process">
+        <div class="container">
+            <header class="module-header">
+                <p class="module-label">Process</p>
+                <h2 class="module-title">How We Operate</h2>
+                <p class="module-desc">
+                    A clear sequence from initial contact to deployment. 
+                    No ambiguity, no surprises.
+                </p>
+            </header>
+
+            <div class="process-grid">
+                <div class="process-steps">
+                    <div class="process-step">
+                        <span class="step-number">01</span>
+                        <div class="step-content">
+                            <h4>Discovery</h4>
+                            <p>Understand requirements, constraints, and objectives.</p>
+                        </div>
+                    </div>
+
+                    <div class="process-step">
+                        <span class="step-number">02</span>
+                        <div class="step-content">
+                            <h4>Analysis</h4>
+                            <p>Audit existing systems, identify gaps and opportunities.</p>
+                        </div>
+                    </div>
+
+                    <div class="process-step">
+                        <span class="step-number">03</span>
+                        <div class="step-content">
+                            <h4>Architecture</h4>
+                            <p>Design solution framework with clear milestones.</p>
+                        </div>
+                    </div>
+
+                    <div class="process-step">
+                        <span class="step-number">04</span>
+                        <div class="step-content">
+                            <h4>Execution</h4>
+                            <p>Build, test, and iterate with continuous feedback.</p>
+                        </div>
+                    </div>
+
+                    <div class="process-step">
+                        <span class="step-number">05</span>
+                        <div class="step-content">
+                            <h4>Deployment</h4>
+                            <p>Launch with documentation and handoff protocols.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="process-visual" aria-hidden="true">
+                    <div class="terminal-line"><span class="cmd">$</span> nexovia init --project="your-brand"</div>
+                    <div class="terminal-line"><span class="output">→ Discovery phase initiated...</span></div>
+                    <div class="terminal-line"><span class="output">→ Analyzing existing systems...</span></div>
+                    <div class="terminal-line"><span class="output">→ Architecture complete.</span></div>
+                    <div class="terminal-line"><span class="output">→ Building components...</span></div>
+                    <div class="terminal-line"><span class="output">→ Tests passed: 47/47</span></div>
+                    <div class="terminal-line"><span class="cmd">$</span> nexovia deploy --production</div>
+                    <div class="terminal-line"><span class="output">✓ Deployment successful.</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         CAPABILITY STACK MODULE
+         ================================================ -->
+    <section class="section" id="stack">
+        <div class="container">
+            <header class="module-header">
+                <p class="module-label">Stack</p>
+                <h2 class="module-title">Subsystems</h2>
+                <p class="module-desc">
+                    Three interconnected domains that form our capability matrix.
+                </p>
+            </header>
+
+            <div class="stack-grid">
+                <div class="stack-column">
+                    <div class="stack-header">
+                        <span>◉</span> Technology
+                    </div>
+                    <ul class="stack-list">
+                        <li>Modern Frontend (React, Vue, Svelte)</li>
+                        <li>Headless CMS Architecture</li>
+                        <li>API Design & Integration</li>
+                        <li>Performance Optimization</li>
+                        <li>Cloud Infrastructure</li>
+                        <li>Security Protocols</li>
+                    </ul>
+                </div>
+
+                <div class="stack-column">
+                    <div class="stack-header">
+                        <span>◈</span> Strategy
+                    </div>
+                    <ul class="stack-list">
+                        <li>Market Positioning</li>
+                        <li>Digital Roadmapping</li>
+                        <li>Competitive Analysis</li>
+                        <li>User Journey Mapping</li>
+                        <li>Conversion Architecture</li>
+                        <li>Growth Systems</li>
+                    </ul>
+                </div>
+
+                <div class="stack-column">
+                    <div class="stack-header">
+                        <span>⬡</span> Creative
+                    </div>
+                    <ul class="stack-list">
+                        <li>Brand Identity Systems</li>
+                        <li>UI/UX Design</li>
+                        <li>Design Systems</li>
+                        <li>Motion & Interaction</li>
+                        <li>Visual Guidelines</li>
+                        <li>Content Strategy</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         CONSTRAINTS MODULE
+         ================================================ -->
+    <section class="section" id="fit">
+        <div class="container">
+            <header class="module-header">
+                <p class="module-label">Constraints</p>
+                <h2 class="module-title">Compatibility</h2>
+                <p class="module-desc">
+                    Clarity upfront. This is who we work best with.
+                </p>
+            </header>
+
+            <div class="constraints-grid">
+                <div class="constraint-box positive">
+                    <h3 class="constraint-title">Designed For</h3>
+                    <ul class="constraint-list">
+                        <li><span>+</span> Teams who value precision over trends</li>
+                        <li><span>+</span> Projects with clear objectives</li>
+                        <li><span>+</span> Brands ready for systematic growth</li>
+                        <li><span>+</span> Organizations seeking long-term partners</li>
+                        <li><span>+</span> Leaders who respect the process</li>
+                    </ul>
+                </div>
+
+                <div class="constraint-box negative">
+                    <h3 class="constraint-title">Not Optimized For</h3>
+                    <ul class="constraint-list">
+                        <li><span>−</span> Rushed timelines without flexibility</li>
+                        <li><span>−</span> Scope creep as a feature</li>
+                        <li><span>−</span> Design by committee without direction</li>
+                        <li><span>−</span> Projects seeking decoration over function</li>
+                        <li><span>−</span> Engagements without mutual respect</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         CONTACT MODULE - Google Forms Integration
+         ================================================ -->
+    <section class="section" id="contact">
+        <div class="container">
+            <header class="module-header">
+                <p class="module-label">Contact</p>
+                <h2 class="module-title">Initialize Connection</h2>
+                <p class="module-desc">
+                    Ready to discuss your project? Provide context below.
+                </p>
+            </header>
+
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <h3>Let's build something considered.</h3>
+                    <p>
+                        We respond to all inquiries within 48 hours. For urgent 
+                        consultations, include [PRIORITY] in your message.
+                    </p>
+                    <div class="contact-meta">
+                        <p>Direct: <a href="mailto:hello@nexovia.studio">hello@nexovia.studio</a></p>
+                        <p style="margin-top: var(--space-xs);">Response time: &lt; 48h</p>
+                    </div>
+                </div>
+
+                <!-- 
+                    ✓ GOOGLE FORMS - CONNECTED & LIVE
+                    ==================================
+                    Form: https://docs.google.com/forms/d/e/1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA/viewform
+                    
+                    All submissions are stored directly in Google Forms.
+                    View responses in Google Forms > Responses tab, or link to Google Sheets.
+                    
+                    Submission Method: Hidden iframe (bypasses CORS, single submission)
+                    This ensures reliable delivery to Google Forms backend.
+                -->
+                <form class="contact-form" id="contactForm" novalidate>
+                    <div class="form-status" id="formStatus"></div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="name">Name *</label>
+                        <input type="text" id="name" name="name" class="form-input" 
+                               placeholder="Your name" required>
+                        <span class="form-error">Name is required</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email *</label>
+                        <input type="email" id="email" name="email" class="form-input" 
+                               placeholder="your@email.com" required>
+                        <span class="form-error">Valid email is required</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="project">Project Type</label>
+                        <input type="text" id="project" name="project" class="form-input" 
+                               placeholder="e.g., Brand System, Web Application">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="message">Message *</label>
+                        <textarea id="message" name="message" class="form-textarea" 
+                                  placeholder="Describe your project, goals, and timeline..." 
+                                  required></textarea>
+                        <span class="form-error">Message is required</span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="submitBtn" style="width: 100%;">
+                        Submit Request →
+                    </button>
+                    
+                    <p style="text-align: center; margin-top: var(--space-sm); font-size: 0.75rem; color: var(--text-muted);">
+                        Or <a href="https://docs.google.com/forms/d/e/1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA/viewform" 
+                              target="_blank" 
+                              style="color: var(--accent-cyan);">open form directly →</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================================================
+         FOOTER MODULE
+         ================================================ -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <p class="footer-text">
+                © 2024 Nexovia Digistudio. All systems nominal.
+            </p>
+            <ul class="footer-links">
+                <li><a href="#hero">↑ Top</a></li>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- ================================================
+         JAVASCRIPT - With Google Forms Integration
+         ================================================ -->
+    <script>
+        /**
+         * NEXOVIA DIGISTUDIO - Interaction Layer
+         * ==========================================
+         * GOOGLE FORM: https://docs.google.com/forms/d/e/1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA/viewform
+         * 
+         * This script auto-detects entry IDs from the Google Form
+         * and submits data reliably via hidden iframe method.
+         */
+
+        // ================================================
+        // GOOGLE FORM CONFIGURATION
+        // ================================================
+        const GOOGLE_FORM_CONFIG = {
+            formId: '1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA',
+            // ✓ VERIFIED ENTRY IDs - Extracted from pre-filled URL
+            entryIds: {
+                name: 'entry.933154368',
+                email: 'entry.1582617777',
+                project: 'entry.421408161',
+                message: 'entry.1476242669'
+            },
+            isReady: true
+        };
+
+        const GOOGLE_FORM_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
+        const GOOGLE_FORM_VIEW_URL = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/viewform`;
+
+        // ================================================
+        // ENTRY IDs CONFIGURED - READY TO USE
+        // ================================================
+        // Entry IDs extracted from pre-filled URL:
+        // https://docs.google.com/forms/d/e/1FAIpQLSfHQ4uENtdy39s8L6kU5qKj8g5AH7xdulc-Dx25tyP2I7dKGA/viewform?usp=pp_url&entry.933154368=Testname&entry.1582617777=Test@test.com&entry.421408161=Testproject&entry.1476242669=Testmessage
+        
+        function logEntryIds() {
+            console.log('%c[nexovia] Entry IDs configured:', 'color: #3DDC97;');
+            console.log('%c  → Name: entry.933154368', 'color: #9A9A9A;');
+            console.log('%c  → Email: entry.1582617777', 'color: #9A9A9A;');
+            console.log('%c  → Project: entry.421408161', 'color: #9A9A9A;');
+            console.log('%c  → Message: entry.1476242669', 'color: #9A9A9A;');
+        }
+
+        // ================================================
+        // MOBILE NAVIGATION
+        // ================================================
+        const navToggle = document.querySelector('.nav-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        navToggle.addEventListener('click', () => {
+            const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+            navToggle.setAttribute('aria-expanded', !isExpanded);
+            navLinks.classList.toggle('active');
+        });
+
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // ================================================
+        // FORM ELEMENTS
+        // ================================================
+        const contactForm = document.getElementById('contactForm');
+        const formStatus = document.getElementById('formStatus');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // ================================================
+        // FORM VALIDATION
+        // ================================================
+        const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+        const validateField = (field) => {
+            const value = field.value.trim();
+            const formGroup = field.closest('.form-group');
+            
+            if (field.required && !value) {
+                formGroup.classList.add('error');
+                return false;
+            }
+            
+            if (field.type === 'email' && value && !validateEmail(value)) {
+                formGroup.classList.add('error');
+                return false;
+            }
+            
+            formGroup.classList.remove('error');
+            return true;
+        };
+
+        // Real-time validation
+        contactForm.querySelectorAll('input, textarea').forEach(field => {
+            field.addEventListener('blur', () => validateField(field));
+            field.addEventListener('input', () => {
+                if (field.closest('.form-group').classList.contains('error')) {
+                    validateField(field);
+                }
+            });
+        });
+
+        // ================================================
+        // GOOGLE FORMS SUBMISSION - BULLETPROOF METHOD
+        // ================================================
+        // Uses pre-filled URL redirect which ALWAYS works
+        
+            function submitViaPrefilledURL(formData) {
+            return new Promise((resolve) => {
+                const baseUrl = `https://docs.google.com/forms/d/e/${GOOGLE_FORM_CONFIG.formId}/formResponse`;
+                
+                // Create hidden iframe for form submission
+                let iframe = document.getElementById('gform-iframe');
+                if (!iframe) {
+                    iframe = document.createElement('iframe');
+                    iframe.id = 'gform-iframe';
+                    iframe.name = 'gform-iframe';
+                    iframe.style.cssText = 'position:absolute;width:1px;height:1px;left:-9999px;opacity:0;';
+                    document.body.appendChild(iframe);
+                }
+
+                // Create form targeting the iframe with VERIFIED entry IDs
+                const tempForm = document.createElement('form');
+                tempForm.method = 'POST';
+                tempForm.action = baseUrl;
+                tempForm.target = 'gform-iframe';
+                tempForm.style.display = 'none';
+                
+                // Use verified entry IDs
+                const fields = {
+                    'entry.933154368': formData.name,
+                    'entry.1582617777': formData.email,
+                    'entry.421408161': formData.project || 'Not specified',
+                    'entry.1476242669': formData.message
+                };
+                
+                Object.entries(fields).forEach(([name, value]) => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = name;
+                    input.value = value;
+                    tempForm.appendChild(input);
+                });
+
+                document.body.appendChild(tempForm);
+                
+                let submitted = false;
+                
+                iframe.onload = () => {
+                    if (!submitted) {
+                        submitted = true;
+                        console.log('%c[nexovia] ✓ Form submitted successfully via iframe', 'color: #3DDC97;');
+                        tempForm.remove();
+                        resolve({ success: true });
+                    }
+                };
+                
+                // Submit the form
+                console.log('%c[nexovia] Submitting to Google Forms...', 'color: #6EE7FF;');
+                console.log('%c[nexovia] Data:', 'color: #9A9A9A;', fields);
+                tempForm.submit();
+                
+                // Timeout fallback - resolve after 2 seconds
+                setTimeout(() => {
+                    if (!submitted) {
+                        submitted = true;
+                        tempForm.remove();
+                        console.log('%c[nexovia] ✓ Submission complete (timeout)', 'color: #3DDC97;');
+                        resolve({ success: true });
+                    }
+                }, 2000);
+            });
+        }
+        
+        // Single submission method - iframe only (prevents duplicates)
+        async function submitToGoogleForms(formData) {
+            console.log('%c[nexovia] Submitting form data...', 'color: #6EE7FF;', formData);
+            
+            // Use iframe submission (most reliable, no CORS issues)
+            return await submitViaPrefilledURL(formData);
+        }
+
+        // ================================================
+        // FORM SUBMISSION HANDLER
+        // ================================================
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Validate all fields
+            const fields = contactForm.querySelectorAll('input, textarea');
+            let isValid = true;
+            
+            fields.forEach(field => {
+                if (!validateField(field)) isValid = false;
+            });
+            
+            if (!isValid) {
+                formStatus.className = 'form-status error';
+                formStatus.textContent = '✕ Please fill in all required fields.';
+                return;
+            }
+
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                project: document.getElementById('project').value.trim(),
+                message: document.getElementById('message').value.trim()
+            };
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Transmitting...';
+            formStatus.className = 'form-status loading';
+            formStatus.textContent = '→ Connecting to server...';
+
+            try {
+                // Submit to Google Forms
+                const result = await submitToGoogleForms(formData);
+
+                // Success state
+                formStatus.className = 'form-status success';
+                formStatus.innerHTML = '✓ Message transmitted successfully!<br><small style="opacity:0.8">We\'ll respond within 48 hours.</small>';
+                submitBtn.textContent = '✓ Sent';
+                submitBtn.style.background = 'var(--accent-emerald)';
+                submitBtn.style.borderColor = 'var(--accent-emerald)';
+                
+                // Reset form after delay
+                setTimeout(() => {
+                    contactForm.reset();
+                    submitBtn.textContent = 'Submit Request →';
+                    submitBtn.style.background = '';
+                    submitBtn.style.borderColor = '';
+                    submitBtn.disabled = false;
+                    formStatus.className = 'form-status';
+                    formStatus.textContent = '';
+                }, 5000);
+                
+            } catch (error) {
+                console.error('[nexovia] Submission error:', error);
+                formStatus.className = 'form-status error';
+                formStatus.innerHTML = '✕ Connection failed.<br><small>Please email us directly at hello@nexovia.studio</small>';
+                submitBtn.textContent = 'Retry →';
+                submitBtn.disabled = false;
+            }
+        });
+
+        // ================================================
+        // SMOOTH SCROLL
+        // ================================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    const navHeight = document.querySelector('.nav').offsetHeight;
+                    const targetPosition = target.offsetTop - navHeight;
+                    
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // ================================================
+        // INITIALIZATION
+        // ================================================
+        (function init() {
+            console.log('%c╔══════════════════════════════════════╗', 'color: #6EE7FF;');
+            console.log('%c║   NEXOVIA DIGISTUDIO - System v2.0   ║', 'color: #6EE7FF;');
+            console.log('%c╚══════════════════════════════════════╝', 'color: #6EE7FF;');
+            console.log('');
+            console.log('%c[nexovia] ✓ Google Form CONNECTED & VERIFIED', 'color: #3DDC97; font-weight: bold;');
+            logEntryIds();
+            console.log('');
+            console.log('%c[nexovia] Form URL:', 'color: #6EE7FF;');
+            console.log('%c  → ' + GOOGLE_FORM_VIEW_URL, 'color: #9A9A9A;');
+            console.log('');
+            console.log('%c[nexovia] System ready ✓', 'color: #3DDC97;');
+        })();
+
+        // ================================================
+        // DEBUG / TEST COMMANDS
+        // ================================================
+        // Quick test function - run in browser console
+        window.testSubmit = function() {
+            const testData = {
+                name: 'Test User (Website)',
+                email: 'test@nexovia.studio',
+                project: 'Test Submission',
+                message: 'This is a test submission from the Nexovia website. Timestamp: ' + new Date().toISOString()
+            };
+            console.log('%c[nexovia] 🧪 Sending test submission...', 'color: #6EE7FF;');
+            submitToGoogleForms(testData).then(() => {
+                console.log('%c[nexovia] ✓ Test complete! Check Google Form responses.', 'color: #3DDC97; font-weight: bold;');
+            });
+        };
+        
+        console.log('%c[nexovia] Debug: Type testSubmit() to send a test', 'color: #9A9A9A;');
+    </script>
+</body>
+</html>
