@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1735689600000,
+    "title": "The Architecture of Scalable Design Systems",
+    "image": "https://images.unsplash.com/photo-1558655146-9f40138edfeb?auto=format&fit=crop&q=80&w=800",
+    "excerpt": "Building design systems that grow with your product. A deep dive into component architecture, token management, and cross-platform consistency.",
+    "type": "article",
+    "content": "<h2>Why Design Systems Matter</h2><p>In the modern digital landscape, consistency isn't just aesthetic—it's functional. A well-architected design system serves as the single source of truth for your entire product ecosystem.</p><h3>Core Principles</h3><p>Every scalable design system is built on three pillars:</p><ul><li><strong>Atomic Components</strong> — Start with the smallest elements and compose upward</li><li><strong>Design Tokens</strong> — Abstract values into reusable variables</li><li><strong>Documentation</strong> — If it's not documented, it doesn't exist</li></ul><blockquote>The best design system is one that designers and developers actually want to use.</blockquote><h3>Token Architecture</h3><p>Design tokens are the bridge between design and code. They represent the smallest pieces of your design decisions:</p><pre><code>--color-primary: #6EE7FF;\n--spacing-md: 1.5rem;\n--font-mono: 'SF Mono', monospace;</code></pre><p>When these tokens change, everything updates automatically. That's the power of systematic thinking.</p><h3>Component Hierarchy</h3><p>Structure your components in layers:</p><ol><li><strong>Primitives</strong> — Buttons, inputs, typography</li><li><strong>Composites</strong> — Cards, forms, navigation</li><li><strong>Templates</strong> — Page layouts, flows</li><li><strong>Pages</strong> — Actual implementations</li></ol><p>This hierarchy ensures maintainability and reduces cognitive load for your team.</p>"
+  },
+  {
+    "id": 1735603200000,
+    "title": "API-First Development: A Strategic Approach",
+    "image": "https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&q=80&w=800",
+    "excerpt": "Why designing your API before writing code leads to better products, faster development, and happier teams.",
+    "type": "article",
+    "content": "<h2>The API-First Mindset</h2><p>Traditional development often treats APIs as an afterthought—a way to expose functionality that already exists. API-first flips this paradigm entirely.</p><h3>What is API-First?</h3><p>API-first development means designing your API contract before writing any implementation code. The API becomes the product specification itself.</p><blockquote>Your API is a user interface. Treat it with the same care you'd give to your frontend.</blockquote><h3>Benefits of API-First</h3><ul><li><strong>Parallel Development</strong> — Frontend and backend teams work simultaneously</li><li><strong>Better Contracts</strong> — Catch design issues before they're coded</li><li><strong>Documentation by Default</strong> — The spec IS the documentation</li><li><strong>Easier Testing</strong> — Mock servers from day one</li></ul><h3>Tools We Use</h3><p>Our API-first workflow includes:</p><ol><li><strong>OpenAPI 3.0</strong> — For specification writing</li><li><strong>Stoplight</strong> — For visual API design</li><li><strong>Prism</strong> — For mock servers</li><li><strong>Postman</strong> — For testing and collaboration</li></ol><p>The investment in upfront design pays dividends throughout the entire development lifecycle.</p>"
+  },
+  {
+    "id": 1735516800000,
+    "title": "Performance Budgets: The Missing Metric",
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800",
+    "excerpt": "How setting strict performance budgets can transform your development process and user experience outcomes.",
+    "type": "article",
+    "content": "<h2>Speed is a Feature</h2><p>Every 100ms of latency costs you conversions. Yet most teams don't have concrete performance targets. That's where performance budgets come in.</p><h3>What is a Performance Budget?</h3><p>A performance budget is a set of limits on metrics that affect site performance. Once set, the team must work within these constraints.</p><h3>Key Metrics to Budget</h3><ul><li><strong>Time to Interactive (TTI)</strong> — Under 3.5 seconds</li><li><strong>First Contentful Paint (FCP)</strong> — Under 1.8 seconds</li><li><strong>Total Bundle Size</strong> — Under 200KB gzipped</li><li><strong>Image Weight</strong> — Under 500KB per page</li></ul><blockquote>If you can't measure it, you can't improve it. But if you don't budget it, you won't maintain it.</blockquote><h3>Enforcing Budgets</h3><p>Budgets only work if they're enforced. We integrate checks into CI/CD:</p><pre><code>lighthouse --budget-path=budget.json --output=json</code></pre><p>If the budget is exceeded, the build fails. No exceptions.</p><h3>The Cultural Shift</h3><p>Performance budgets change how teams think. Every new feature must justify its weight. Every library import is scrutinized. This constraint breeds creativity.</p>"
+  },
+  {
+    "id": 1735430400000,
+    "title": "The Case for Headless Architecture",
+    "image": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
+    "excerpt": "Decoupling your frontend from your backend opens new possibilities. Here's when headless makes sense and when it doesn't.",
+    "type": "article",
+    "content": "<h2>Headless Explained</h2><p>Headless architecture separates the content management backend from the frontend presentation layer. They communicate via APIs, giving you freedom on both ends.</p><h3>When Headless Makes Sense</h3><ul><li><strong>Multi-channel delivery</strong> — Same content to web, mobile, IoT</li><li><strong>Performance critical</strong> — Static generation, edge deployment</li><li><strong>Custom frontends</strong> — React, Vue, or any framework</li><li><strong>Team specialization</strong> — Backend and frontend teams work independently</li></ul><h3>When to Stay Traditional</h3><p>Headless isn't always the answer:</p><ul><li>Simple marketing sites with basic needs</li><li>Small teams without API expertise</li><li>Tight budgets (headless requires more infrastructure)</li><li>Content editors who need preview functionality</li></ul><blockquote>Choose architecture based on your actual constraints, not industry hype.</blockquote><h3>Our Headless Stack</h3><ol><li><strong>CMS</strong> — Sanity or Strapi</li><li><strong>Frontend</strong> — Next.js or Astro</li><li><strong>Hosting</strong> — Vercel or Cloudflare</li><li><strong>CDN</strong> — Built-in with hosting</li></ol><p>This stack gives us sub-second page loads and complete creative freedom.</p>"
+  },
+  {
+    "id": 1735344000000,
+    "title": "Security Fundamentals for Modern Web Apps",
+    "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=800",
+    "excerpt": "Essential security practices every development team should implement from day one. Prevention over remediation.",
+    "type": "article",
+    "content": "<h2>Security is Not Optional</h2><p>In an era of increasing cyber threats, security must be baked into your development process from the start—not bolted on later.</p><h3>The OWASP Top 10</h3><p>Every developer should know the OWASP Top 10 vulnerabilities:</p><ol><li>Injection attacks (SQL, NoSQL, OS)</li><li>Broken authentication</li><li>Sensitive data exposure</li><li>XML External Entities (XXE)</li><li>Broken access control</li></ol><h3>Essential Practices</h3><ul><li><strong>Input Validation</strong> — Never trust user input. Ever.</li><li><strong>Parameterized Queries</strong> — Prevent SQL injection</li><li><strong>HTTPS Everywhere</strong> — No exceptions</li><li><strong>Content Security Policy</strong> — Mitigate XSS attacks</li><li><strong>Dependency Auditing</strong> — npm audit, Snyk, Dependabot</li></ul><blockquote>The cost of prevention is always less than the cost of a breach.</blockquote><h3>Authentication Best Practices</h3><pre><code>// Never store plain text passwords\nconst hash = await bcrypt.hash(password, 12);\n\n// Use secure session management\napp.use(session({\n  secret: process.env.SESSION_SECRET,\n  secure: true,\n  httpOnly: true\n}));</code></pre><p>Security is a continuous process, not a one-time checklist.</p>"
+  },
+  {
+    "id": 1735257600000,
+    "title": "Documentation as a Product",
+    "image": "https://images.unsplash.com/photo-1456324504439-367cee3b3c32?auto=format&fit=crop&q=80&w=800",
+    "excerpt": "Great documentation is a competitive advantage. How to build docs that developers actually want to read.",
+    "type": "link",
+    "content": "https://docs.github.com/en"
+  }
+]
