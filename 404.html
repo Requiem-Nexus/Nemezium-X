@@ -1,34 +1,752 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Page Not Found</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      font-family: sans-serif;
-      text-align: center;
-      margin-top: 50px;
-      background: #0F0F11;
-      color: #fff;
-    }
-    a {
-      color: #fff;
-      text-decoration: underline;
-      font-weight: bold;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Page Not Found | NemeZium X Digistudio</title>
+    <meta name="description" content="The page you're looking for doesn't exist or has been moved.">
+    
+    <style>
+        /* ================================================
+           ROOT VARIABLES - Color Palette Definition
+           ================================================ */
+        :root {
+            --bg-primary: #0F0F11;
+            --bg-secondary: #18181C;
+            --text-primary: #EAEAEA;
+            --text-muted: #9A9A9A;
+            --accent-cyan: #6EE7FF;
+            --accent-emerald: #3DDC97;
+            --accent-amber: #FCD34D;
+            --border-color: #2A2A2F;
+            
+            --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            --font-system: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-2xl: 4rem;
+        }
+
+        /* ================================================
+           BASE RESET & TYPOGRAPHY
+           ================================================ */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-system);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        ::selection {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+        }
+
+        /* ================================================
+           NAVIGATION - With Logo Section
+           ================================================ */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 17, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--space-md);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--space-sm);
+            text-decoration: none;
+        }
+
+        .nav-logo-icon {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-emerald) 100%);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-logo-icon::before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+        }
+
+        .nav-logo-img {
+            position: relative;
+            z-index: 1;
+            width: 48px;
+            height: 48px;
+            max-width: 48px;
+            max-height: 48px;
+            min-width: 48px;
+            min-height: 48px;
+            object-fit: contain;
+            display: block;
+        }
+
+        .nav-logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.1;
+        }
+
+        .nav-logo-brand {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo-brand span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-logo-tagline {
+            font-family: var(--font-mono);
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--space-lg);
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* ================================================
+           404 MAIN CONTENT
+           ================================================ */
+        .error-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 64px;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        /* Background grid pattern */
+        .error-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-image: 
+                linear-gradient(var(--border-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.15;
+        }
+
+        /* Ambient glow effects */
+        .error-glow {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .error-glow-1 {
+            top: -200px;
+            right: -200px;
+            background: radial-gradient(circle, rgba(110, 231, 255, 0.08) 0%, transparent 70%);
+        }
+
+        .error-glow-2 {
+            bottom: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(61, 220, 151, 0.06) 0%, transparent 70%);
+        }
+
+        .error-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: var(--space-xl);
+            max-width: 700px;
+        }
+
+        /* Terminal window */
+        .terminal-window {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: var(--space-xl);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: var(--space-sm) var(--space-md);
+            background: var(--bg-primary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #F87171; }
+        .terminal-dot.yellow { background: var(--accent-amber); }
+        .terminal-dot.green { background: var(--accent-emerald); }
+
+        .terminal-title {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .terminal-body {
+            padding: var(--space-lg);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .terminal-line {
+            margin-bottom: var(--space-xs);
+        }
+
+        .terminal-line .prompt {
+            color: var(--accent-cyan);
+        }
+
+        .terminal-line .command {
+            color: var(--text-primary);
+        }
+
+        .terminal-line .error {
+            color: #F87171;
+        }
+
+        .terminal-line .highlight {
+            color: var(--accent-emerald);
+        }
+
+        .terminal-line .dim {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        /* Blinking cursor */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background: var(--accent-cyan);
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* 404 large text */
+        .error-code {
+            font-size: clamp(5rem, 15vw, 10rem);
+            font-weight: 700;
+            letter-spacing: -0.05em;
+            line-height: 1;
+            margin-bottom: var(--space-sm);
+            font-family: var(--font-mono);
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .error-title {
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 600;
+            margin-bottom: var(--space-md);
+        }
+
+        .error-desc {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: var(--space-md);
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Redirect notice */
+        .redirect-notice {
+            background: rgba(110, 231, 255, 0.1);
+            border: 1px solid rgba(110, 231, 255, 0.3);
+            border-radius: 6px;
+            padding: var(--space-sm) var(--space-md);
+            margin-bottom: var(--space-xl);
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-xs);
+        }
+
+        .redirect-notice .countdown {
+            font-weight: 700;
+            min-width: 1.5ch;
+            display: inline-block;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--accent-cyan);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Action buttons */
+        .error-actions {
+            display: flex;
+            gap: var(--space-sm);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding: 0.875rem 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--accent-cyan);
+            color: var(--bg-primary);
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-primary:hover {
+            background: transparent;
+            color: var(--accent-cyan);
+            box-shadow: 0 0 20px rgba(110, 231, 255, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-muted);
+            background: var(--bg-secondary);
+        }
+
+        /* Status info panel */
+        .status-panel {
+            margin-top: var(--space-2xl);
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: var(--space-md);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: left;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            padding-bottom: var(--space-sm);
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: var(--space-sm);
+            color: var(--accent-cyan);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+        }
+
+        .status-label {
+            color: var(--text-muted);
+        }
+
+        .status-value {
+            color: var(--accent-emerald);
+        }
+
+        /* ================================================
+           FOOTER
+           ================================================ */
+        .footer {
+            padding: var(--space-lg) 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 var(--space-md);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-text {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: var(--space-md);
+            list-style: none;
+        }
+
+        .footer-links a {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* ================================================
+           RESPONSIVE
+           ================================================ */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+                gap: var(--space-md);
+                text-align: center;
+            }
+
+            .terminal-body {
+                font-size: 0.8rem;
+                padding: var(--space-md);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-logo-text {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Oops! Page not found.</h1>
-  <p>You’ll be redirected shortly…</p>
-  <p>If not, <a href="/Nemezium-X">click here</a>.</p>
+    <!-- ================================================
+         NAVIGATION MODULE - With Logo Section
+         ================================================ -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-inner">
+            <!-- Logo Section: Icon + Brand Text -->
+            <a href="/" class="nav-logo" aria-label="NemeZium X Digistudio Home">
+                <div class="nav-logo-icon">
+                    <img src="assets/logo3.png" alt="Logo" class="nav-logo-img">
+                </div>
+                <div class="nav-logo-text">
+                    <span class="nav-logo-brand"><span>[</span>NEMEZIUM X<span>]</span></span>
+                    <span class="nav-logo-tagline">digistudio</span>
+                </div>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="/#services">services</a></li>
+                <li><a href="/#process">process</a></li>
+                <li><a href="/#stack">stack</a></li>
+                <li><a href="/#contact">contact</a></li>
+                <li><a href="/blog.html">blog</a></li>
+            </ul>
+        </div>
+    </nav>
 
-  <script>
-    // Delay redirect so visitors can see the 404 page
-    setTimeout(() => {
-      window.location.replace("/Nemezium-X");
-    }, 3000); // 3 seconds
-  </script>
+    <!-- ================================================
+         404 ERROR CONTENT
+         ================================================ -->
+    <main class="error-container" role="main">
+        <!-- Background effects -->
+        <div class="error-bg"></div>
+        <div class="error-glow error-glow-1"></div>
+        <div class="error-glow error-glow-2"></div>
+        
+        <div class="error-content">
+            <!-- Terminal showing error -->
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-dot red"></span>
+                    <span class="terminal-dot yellow"></span>
+                    <span class="terminal-dot green"></span>
+                    <span class="terminal-title">bash — 404</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="terminal-line">
+                        <span class="prompt">$</span> 
+                        <span class="command">curl -I <span id="requested-url">/unknown-page</span></span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="dim">HTTP/1.1</span> 
+                        <span class="error">404 Not Found</span>
+                    </div>
+                    <div class="terminal-line"><span class="dim">Server: NemeZium/2.0</span></div>
+                    <div class="terminal-line"><span class="dim">Date: </span><span id="current-time"></span></div>
+                    <div class="terminal-line">
+                        <span class="highlight">→ Initiating redirect to homepage...</span>
+                    </div>
+                    <div class="terminal-line">
+                        <span class="prompt">$</span> 
+                        <span class="command">cd /<span class="cursor"></span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Big 404 -->
+            <h1 class="error-code">404</h1>
+            <h2 class="error-title">Page Not Found</h2>
+            <p class="error-desc">
+                The page you're looking for doesn't exist or has been moved.
+            </p>
+
+            <!-- Redirect countdown notice -->
+            <div class="redirect-notice">
+                <span class="spinner"></span>
+                <span>Redirecting in <span id="countdown" class="countdown">5</span> seconds...</span>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="error-actions">
+                <a href="/" class="btn btn-primary">← Go Home Now</a>
+                <a href="/#contact" class="btn btn-secondary">Contact Support</a>
+            </div>
+
+            <!-- Status info panel (no scary IP stuff) -->
+            <div class="status-panel">
+                <div class="status-header">
+                    <span>◇</span> Status
+                </div>
+                <div class="status-row">
+                    <span class="status-label">Error Code</span>
+                    <span class="status-value">404</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-label">Requested Path</span>
+                    <span class="status-value" id="status-path">/unknown</span>
+                </div>
+                <div class="status-row">
+                    <span class="status-label">Action</span>
+                    <span class="status-value">Auto-redirect</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================================================
+         FOOTER MODULE
+         ================================================ -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <p class="footer-text">
+                © 2026 NEMEZIUM X Digistudio. All systems nominal.
+            </p>
+            <ul class="footer-links">
+                <li><a href="/">↑ Home</a></li>
+                <li><a href="#">Privacy</a></li>
+                <li><a href="#">Terms</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- ================================================
+         JAVASCRIPT
+         ================================================ -->
+    <script>
+        // ================================================
+        // CONFIGURATION
+        // ================================================
+        const REDIRECT_URL = '/';  // Where to redirect
+        const REDIRECT_DELAY = 5;  // Seconds before redirect
+
+        // ================================================
+        // COUNTDOWN & REDIRECT
+        // ================================================
+        let countdown = REDIRECT_DELAY;
+        const countdownEl = document.getElementById('countdown');
+
+        function updateCountdown() {
+            countdown--;
+            if (countdownEl) {
+                countdownEl.textContent = countdown;
+            }
+            
+            if (countdown <= 0) {
+                // Redirect to homepage
+                window.location.replace(REDIRECT_URL);
+            }
+        }
+
+        // Start countdown
+        const countdownInterval = setInterval(updateCountdown, 1000);
+
+        // ================================================
+        // DYNAMIC CONTENT
+        // ================================================
+        
+        // Set current time
+        function updateTime() {
+            const now = new Date();
+            const timeStr = now.toUTCString();
+            const timeEl = document.getElementById('current-time');
+            if (timeEl) {
+                timeEl.textContent = timeStr;
+            }
+        }
+
+        // Set requested URL in terminal and status panel
+        function setRequestedURL() {
+            const path = window.location.pathname || '/unknown-page';
+            
+            const urlEl = document.getElementById('requested-url');
+            if (urlEl) {
+                urlEl.textContent = path;
+            }
+            
+            const statusPathEl = document.getElementById('status-path');
+            if (statusPathEl) {
+                statusPathEl.textContent = path.length > 25 ? path.substring(0, 22) + '...' : path;
+            }
+        }
+
+        // ================================================
+        // INITIALIZATION
+        // ================================================
+        (function init() {
+            console.log('%c╔══════════════════════════════════════╗', 'color: #6EE7FF;');
+            console.log('%c║   404 ERROR - NEMEZIUM X DIGISTUDIO  ║', 'color: #6EE7FF;');
+            console.log('%c╚══════════════════════════════════════╝', 'color: #6EE7FF;');
+            
+            updateTime();
+            setRequestedURL();
+
+            console.log('%c[404] Page loaded', 'color: #3DDC97;');
+            console.log('%c[404] Auto-redirect in ' + REDIRECT_DELAY + ' seconds', 'color: #6EE7FF;');
+        })();
+
+        // Update time every second
+        setInterval(updateTime, 1000);
+
+        // Allow user to cancel redirect by clicking anywhere
+        document.addEventListener('click', function(e) {
+            // Don't cancel if clicking a link
+            if (e.target.tagName === 'A' || e.target.closest('a')) {
+                return;
+            }
+        });
+    </script>
 </body>
 </html>
