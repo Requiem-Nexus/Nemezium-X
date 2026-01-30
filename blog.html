@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog | NemeZium X Digistudio</title>
+    <meta name="description" content="Insights on digital strategy, technology architecture, and brand systems from Nexovia Digistudio.">
+    
+    <!-- Quill Editor -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+    
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-primary: #0F0F11;
+            --bg-secondary: #18181C;
+            --bg-tertiary: #1E1E24;
+            --text-primary: #EAEAEA;
+            --text-muted: #9A9A9A;
+            --accent-cyan: #6EE7FF;
+            --accent-emerald: #3DDC97;
+            --accent-purple: #B794F4;
+            --accent-red: #F87171;
+            --border-color: #2A2A2F;
+            --font-mono: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            --font-system: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            --space-2xl: 4rem;
+            --space-3xl: 6rem;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; font-size: 16px; }
+        body {
+            font-family: var(--font-system);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        ::selection { background: var(--accent-cyan); color: var(--bg-primary); }
+        .hidden { display: none !important; }
+
+        /* Layout */
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 var(--space-md); }
+        .section { padding: var(--space-3xl) 0; border-bottom: 1px solid var(--border-color); }
+        .module-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: var(--space-xs);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+        .module-label::before { content: '>'; opacity: 0.7; }
+        .module-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; }
+        .module-desc { color: var(--text-muted); font-size: 1rem; margin-top: var(--space-sm); max-width: 600px; }
+
+        /* Navigation */
+        .nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(15, 15, 17, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .nav-inner { display: flex; justify-content: space-between; align-items: center; height: 64px; }
+        .nav-logo { display: flex; align-items: center; gap: var(--space-sm); text-decoration: none; }
+        .nav-logo-icon {
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-emerald) 100%);
+            border-radius: 8px; position: relative; overflow: hidden;
+        }
+        .nav-logo-icon::before { content: ''; position: absolute; inset: 2px; background: var(--bg-primary); border-radius: 6px; }
+        .nav-logo-img { position: relative; z-index: 1; width: 48px; height: 48px; object-fit: contain; }
+        .nav-logo-text { display: flex; flex-direction: column; line-height: 1.1; }
+        .nav-logo-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+        .nav-logo-brand span { color: var(--accent-cyan); }
+        .nav-logo-tagline { font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; }
+        .nav-links { display: flex; gap: var(--space-lg); list-style: none; align-items: center; }
+        .nav-links a { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s ease; letter-spacing: 0.05em; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent-cyan); }
+        .nav-toggle { display: none; background: none; border: none; color: var(--text-primary); cursor: pointer; padding: var(--space-xs); }
+        .admin-indicator { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-emerald); cursor: pointer; transition: color 0.2s; background: none; border: none; }
+        .admin-indicator:hover { color: var(--accent-cyan); }
+        .status-dot { width: 6px; height: 6px; background: var(--accent-emerald); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        /* Blog Header */
+        .blog-header {
+            padding-top: calc(64px + var(--space-3xl));
+            padding-bottom: var(--space-xl);
+            border-bottom: 1px solid var(--border-color);
+            position: relative; overflow: hidden;
+        }
+        .blog-header::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse at 70% 0%, rgba(110, 231, 255, 0.06) 0%, transparent 50%),
+                        radial-gradient(ellipse at 30% 100%, rgba(61, 220, 151, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .blog-header-content { position: relative; z-index: 1; }
+        .blog-stats { display: flex; gap: var(--space-lg); margin-top: var(--space-md); font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+        .blog-stat { display: flex; align-items: center; gap: var(--space-xs); }
+        .blog-stat-value { color: var(--accent-cyan); }
+
+        /* Blog Grid */
+        .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: var(--space-md); }
+        .blog-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px; overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex; flex-direction: column;
+        }
+        .blog-card:hover { border-color: var(--accent-cyan); box-shadow: 0 4px 24px rgba(110, 231, 255, 0.08); transform: translateY(-2px); }
+        .blog-card-image { position: relative; height: 180px; background: var(--bg-tertiary); overflow: hidden; }
+        .blog-card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .blog-card:hover .blog-card-image img { transform: scale(1.05); }
+        .blog-card-type {
+            position: absolute; top: var(--space-sm); right: var(--space-sm);
+            font-family: var(--font-mono); font-size: 0.6rem;
+            padding: 0.25rem 0.5rem;
+            background: rgba(15, 15, 17, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid var(--border-color);
+            color: var(--accent-cyan);
+            border-radius: 3px; text-transform: uppercase; letter-spacing: 0.1em;
+        }
+        .blog-card-content { padding: var(--space-md); flex: 1; display: flex; flex-direction: column; }
+        .blog-card-title { font-size: 1.125rem; font-weight: 600; line-height: 1.3; margin-bottom: var(--space-xs); color: var(--text-primary); }
+        .blog-card-excerpt { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .blog-card-footer { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-md); padding-top: var(--space-sm); border-top: 1px solid var(--border-color); }
+        .read-more { font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan); text-decoration: none; display: flex; align-items: center; gap: 0.25rem; cursor: pointer; background: none; border: none; transition: gap 0.2s ease; }
+        .read-more:hover { gap: 0.5rem; }
+        .empty-state { text-align: center; padding: var(--space-3xl) var(--space-xl); background: var(--bg-secondary); border: 1px dashed var(--border-color); border-radius: 8px; grid-column: 1 / -1; }
+        .empty-state-icon { font-size: 3rem; margin-bottom: var(--space-md); opacity: 0.3; color: var(--accent-cyan); }
+        .empty-state h3 { font-size: 1.25rem; margin-bottom: var(--space-xs); }
+        .empty-state p { color: var(--text-muted); }
+
+        /* Login Modal */
+        .login-modal {
+            position: fixed; inset: 0;
+            background: rgba(15, 15, 17, 0.95);
+            backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 2000;
+        }
+        .login-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: var(--space-xl);
+            width: 100%; max-width: 380px;
+            position: relative;
+        }
+        .login-box::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald)); }
+        .login-header { text-align: center; margin-bottom: var(--space-lg); }
+        .login-header h2 { font-size: 1.25rem; font-weight: 700; }
+        .login-header p { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); margin-top: var(--space-xs); }
+        .form-group { margin-bottom: var(--space-md); }
+        .form-label { display: block; font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-xs); }
+        .form-input {
+            width: 100%; padding: 0.875rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            color: var(--text-primary);
+            font-family: var(--font-system);
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .form-input:focus { outline: none; border-color: var(--accent-cyan); box-shadow: 0 0 0 3px rgba(110, 231, 255, 0.1); }
+        .form-input::placeholder { color: var(--text-muted); opacity: 0.5; }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        .login-error { color: var(--accent-red); font-family: var(--font-mono); font-size: 0.75rem; text-align: center; margin-bottom: var(--space-sm); display: none; }
+        .login-error.show { display: block; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs);
+            padding: 0.875rem 1.5rem;
+            font-family: var(--font-mono); font-size: 0.875rem; font-weight: 500;
+            text-decoration: none; border-radius: 4px; cursor: pointer;
+            transition: all 0.2s ease; border: 1px solid transparent; width: 100%;
+        }
+        .btn-primary { background: var(--accent-cyan); color: var(--bg-primary); border-color: var(--accent-cyan); }
+        .btn-primary:hover { background: transparent; color: var(--accent-cyan); box-shadow: 0 0 20px rgba(110, 231, 255, 0.2); }
+        .btn-secondary { background: transparent; color: var(--text-primary); border-color: var(--border-color); }
+        .btn-secondary:hover { border-color: var(--text-muted); background: var(--bg-tertiary); }
+        .btn-ghost { background: transparent; color: var(--text-muted); border: none; padding: 0.5rem; }
+        .btn-ghost:hover { color: var(--accent-cyan); }
+        .btn-danger { background: rgba(248, 113, 113, 0.1); color: var(--accent-red); border-color: transparent; }
+        .btn-danger:hover { background: var(--accent-red); color: var(--bg-primary); }
+        .btn-sm { padding: 0.5rem 1rem; font-size: 0.75rem; }
+
+        /* Admin View */
+        .admin-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-md); margin-bottom: var(--space-xl); }
+        .admin-title { display: flex; flex-direction: column; gap: var(--space-xs); }
+        .admin-title h1 { font-size: 1.5rem; font-weight: 700; }
+        .admin-actions { display: flex; gap: var(--space-xs); }
+        .admin-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--space-xl); align-items: start; }
+        .admin-panel { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; }
+        .panel-header { padding: var(--space-md); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; background: var(--bg-tertiary); }
+        .panel-title { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: var(--space-xs); }
+        .panel-title i { color: var(--accent-cyan); }
+        .panel-badge { font-family: var(--font-mono); font-size: 0.65rem; padding: 0.25rem 0.5rem; background: rgba(110, 231, 255, 0.1); color: var(--accent-cyan); border-radius: 3px; text-transform: uppercase; }
+        .panel-body { padding: var(--space-md); }
+
+        /* Method Toggle */
+        .method-toggle { display: flex; gap: 2px; background: var(--bg-primary); border-radius: 4px; padding: 3px; margin-bottom: var(--space-md); }
+        .method-btn { flex: 1; padding: 0.75rem; font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; background: transparent; border: none; color: var(--text-muted); cursor: pointer; border-radius: 3px; transition: all 0.2s; }
+        .method-btn.active { background: var(--accent-cyan); color: var(--bg-primary); }
+        .method-btn:hover:not(.active) { color: var(--text-primary); }
+
+        /* Quill Dark Theme */
+        .quill-wrapper { border-radius: 4px; overflow: hidden; border: 1px solid var(--border-color); }
+        .ql-toolbar.ql-snow { background: var(--bg-tertiary); border: none; border-bottom: 1px solid var(--border-color); }
+        .ql-toolbar .ql-stroke { stroke: var(--text-muted); }
+        .ql-toolbar .ql-fill { fill: var(--text-muted); }
+        .ql-toolbar .ql-picker { color: var(--text-muted); }
+        .ql-toolbar button:hover .ql-stroke, .ql-toolbar button.ql-active .ql-stroke { stroke: var(--accent-cyan); }
+        .ql-toolbar button:hover .ql-fill, .ql-toolbar button.ql-active .ql-fill { fill: var(--accent-cyan); }
+        .ql-container.ql-snow { background: var(--bg-primary); border: none; font-family: var(--font-system); font-size: 1rem; color: var(--text-primary); }
+        #editor { min-height: 350px; }
+        .ql-editor.ql-blank::before { color: var(--text-muted); opacity: 0.5; font-style: normal; }
+        .ql-snow .ql-picker-options { background: var(--bg-secondary); border-color: var(--border-color); }
+        .ql-snow .ql-picker-item { color: var(--text-muted); }
+        .ql-snow .ql-picker-item:hover { color: var(--accent-cyan); }
+
+        /* Posts Table */
+        .posts-list { max-height: 500px; overflow-y: auto; }
+        .post-item { display: flex; align-items: center; justify-content: space-between; padding: var(--space-md); border-bottom: 1px solid var(--border-color); transition: background 0.2s; }
+        .post-item:hover { background: var(--bg-tertiary); }
+        .post-item:last-child { border-bottom: none; }
+        .post-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .post-info .post-meta { font-family: var(--font-mono); font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; }
+        .post-delete { color: var(--text-muted); background: none; border: none; cursor: pointer; padding: 0.5rem; transition: color 0.2s; }
+        .post-delete:hover { color: var(--accent-red); }
+
+        /* Article View */
+        .article-view { position: fixed; inset: 0; background: var(--bg-primary); z-index: 1500; overflow-y: auto; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .article-container { max-width: 800px; margin: 0 auto; padding: var(--space-3xl) var(--space-md); }
+        .article-back { display: inline-flex; align-items: center; gap: var(--space-xs); font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); text-decoration: none; margin-bottom: var(--space-xl); cursor: pointer; background: none; border: none; transition: color 0.2s; }
+        .article-back:hover { color: var(--accent-cyan); }
+        .article-header { margin-bottom: var(--space-xl); }
+        .article-header h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 700; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: var(--space-md); }
+        .article-cover { width: 100%; height: 400px; object-fit: cover; border-radius: 6px; margin-bottom: var(--space-xl); border: 1px solid var(--border-color); }
+        .article-body { font-size: 1.1rem; line-height: 1.8; color: var(--text-primary); }
+        .article-body h1, .article-body h2, .article-body h3 { margin-top: var(--space-xl); margin-bottom: var(--space-md); font-weight: 700; }
+        .article-body h1 { font-size: 2rem; }
+        .article-body h2 { font-size: 1.5rem; }
+        .article-body h3 { font-size: 1.25rem; }
+        .article-body p { margin-bottom: var(--space-md); }
+        .article-body img { max-width: 100%; border-radius: 6px; margin: var(--space-lg) 0; }
+        .article-body blockquote { border-left: 3px solid var(--accent-cyan); padding-left: var(--space-md); margin: var(--space-lg) 0; font-style: italic; color: var(--text-muted); }
+        .article-body a { color: var(--accent-cyan); }
+        .article-body ul, .article-body ol { margin: var(--space-md) 0; padding-left: var(--space-lg); }
+        .article-body li { margin-bottom: var(--space-xs); }
+        .article-body pre { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 4px; padding: var(--space-md); overflow-x: auto; font-family: var(--font-mono); font-size: 0.9rem; }
+        .article-body code { background: var(--bg-secondary); padding: 0.125rem 0.375rem; border-radius: 3px; font-family: var(--font-mono); font-size: 0.9em; }
+
+        /* Footer */
+        .footer { padding: var(--space-xl) 0; border-top: 1px solid var(--border-color); }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; }
+        .footer-text { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); }
+        .footer-links { display: flex; gap: var(--space-md); list-style: none; }
+        .footer-links a { font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s ease; }
+        .footer-links a:hover { color: var(--accent-cyan); }
+
+        /* Secret Access Styles */
+        .konami-flash { animation: konamiFlash 0.6s ease-out; }
+        @keyframes konamiFlash { 0% { box-shadow: inset 0 0 0 3px var(--accent-cyan); } 50% { box-shadow: inset 0 0 100px 20px rgba(110, 231, 255, 0.15); } 100% { box-shadow: none; } }
+        .konami-toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--bg-secondary); border: 1px solid var(--accent-cyan); color: var(--accent-cyan); padding: 1rem 2rem; border-radius: 6px; font-family: var(--font-mono); font-size: 0.875rem; z-index: 3000; opacity: 0; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 30px rgba(110, 231, 255, 0.2); }
+        .konami-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .tap-counter { position: fixed; top: 80px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.75rem; color: var(--accent-cyan); background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 0.5rem 1rem; border-radius: 20px; opacity: 0; transition: opacity 0.3s ease; z-index: 1100; pointer-events: none; }
+        .tap-counter.visible { opacity: 1; }
+        .tap-counter .dots { display: inline-flex; gap: 4px; margin-left: 8px; }
+        .tap-counter .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-color); transition: background 0.2s ease; }
+        .tap-counter .dot.filled { background: var(--accent-cyan); }
+        @keyframes logoPulse { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
+        .logo-pulse { animation: logoPulse 0.15s ease; }
+        .tagline-hint { transition: all 0.3s ease; }
+        .tagline-hint.counting { color: var(--accent-cyan) !important; }
+        .tagline-hint.unlocked { color: var(--accent-emerald) !important; }
+
+        /* DevTools Warning Overlay */
+        .devtools-warning {
+            position: fixed; inset: 0; z-index: 99999;
+            background: var(--bg-primary);
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: var(--space-md);
+        }
+        .devtools-warning h1 { color: var(--accent-red); font-family: var(--font-mono); font-size: 2rem; }
+        .devtools-warning p { color: var(--text-muted); font-family: var(--font-mono); }
+        .devtools-warning .countdown { color: var(--accent-cyan); font-size: 3rem; font-weight: bold; }
+
+        /* Responsive */
+        @media (max-width: 1024px) { .admin-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .nav-links { display: none; position: absolute; top: 64px; left: 0; right: 0; background: var(--bg-primary); border-bottom: 1px solid var(--border-color); flex-direction: column; padding: var(--space-md); gap: var(--space-md); }
+            .nav-links.active { display: flex; }
+            .nav-toggle { display: block; }
+            .nav-logo-tagline { display: none; }
+            .blog-grid { grid-template-columns: 1fr; }
+            .blog-stats { flex-direction: column; gap: var(--space-xs); }
+            .admin-header { flex-direction: column; align-items: flex-start; }
+            .footer-inner { flex-direction: column; gap: var(--space-md); text-align: center; }
+            .article-cover { height: 250px; }
+        }
+        @media (max-width: 480px) { .nav-logo-text { display: none; } }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" role="navigation">
+        <div class="container nav-inner">
+            <a href="index.html" class="nav-logo" id="logoTrigger">
+                <div class="nav-logo-icon">
+                    <img src="assets/logo3.png" alt="Logo" class="nav-logo-img">
+                </div>
+                <div class="nav-logo-text">
+                    <span class="nav-logo-brand"><span>[</span>NEMEZIUM X<span>]</span></span>
+                    <span class="nav-logo-tagline" id="taglineHint">digistudio</span>
+                </div>
+            </a>
+            
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            
+            <ul class="nav-links">
+                <li><a href="index.html#services">services</a></li>
+                <li><a href="index.html#process">process</a></li>
+                <li><a href="index.html#stack">stack</a></li>
+                <li><a href="blog.html" class="active">blog</a></li>
+                <li><a href="index.html#contact">contact</a></li>
+                <li id="secretAdminNav" class="hidden">
+                    <button onclick="NexoviaApp.showView('admin')" class="admin-indicator">
+                        <span class="status-dot"></span> console
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="login-modal hidden">
+        <div class="login-box">
+            <div class="login-header">
+                <h2>System Access</h2>
+                <p>Authentication required</p>
+            </div>
+            <div class="login-error" id="loginError">Access denied. Invalid credentials.</div>
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" id="username" class="form-input" placeholder="Enter username" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" placeholder="Enter password" autocomplete="off">
+            </div>
+            <button onclick="NexoviaApp.handleLogin()" class="btn btn-primary" style="margin-bottom: var(--space-sm);">
+                Authenticate →
+            </button>
+            <button onclick="NexoviaApp.hideLogin()" class="btn btn-ghost">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Public View -->
+    <div id="publicView">
+        <header class="blog-header">
+            <div class="container">
+                <div class="blog-header-content">
+                    <p class="module-label">System Logs</p>
+                    <h1 class="module-title">Knowledge Base</h1>
+                    <p class="module-desc">Technical insights, strategic frameworks, and operational notes from the studio.</p>
+                    <div class="blog-stats">
+                        <div class="blog-stat"><span>Articles:</span><span class="blog-stat-value" id="articleCount">0</span></div>
+                        <div class="blog-stat"><span>Last updated:</span><span class="blog-stat-value" id="lastUpdated">—</span></div>
+                        <div class="blog-stat"><span>Status:</span><span class="blog-stat-value">● Active</span></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="section">
+            <div class="container">
+                <div class="blog-grid" id="portfolioGrid"></div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container footer-inner">
+                <p class="footer-text">© 2024 Nexovia Digistudio. All systems nominal.</p>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">↑ Top</a></li>
+                </ul>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Admin View -->
+    <div id="adminView" class="hidden" style="padding-top: calc(64px + var(--space-xl)); min-height: 100vh;">
+        <div class="container">
+            <div class="admin-header">
+                <div class="admin-title">
+                    <p class="module-label">Admin Console</p>
+                    <h1>Content Management</h1>
+                    <div class="admin-actions" style="margin-top: var(--space-sm);">
+                        <button onclick="NexoviaApp.exportData()" class="btn btn-secondary btn-sm">
+                            <i class="fa-solid fa-download"></i> Export
+                        </button>
+                        <button onclick="NexoviaApp.importData()" class="btn btn-secondary btn-sm">
+                            <i class="fa-solid fa-upload"></i> Import
+                        </button>
+                        <button onclick="NexoviaApp.forceRefresh()" class="btn btn-secondary btn-sm" title="Force reload from blogPosts.json">
+                            <i class="fa-solid fa-rotate"></i> Sync
+                        </button>
+                    </div>
+                </div>
+                <div class="admin-actions">
+                    <button onclick="NexoviaApp.showView('public')" class="btn btn-secondary btn-sm">
+                        <i class="fa-solid fa-eye"></i> Preview
+                    </button>
+                    <button onclick="NexoviaApp.logout()" class="btn btn-danger btn-sm">
+                        <i class="fa-solid fa-power-off"></i> Logout
+                    </button>
+                </div>
+            </div>
+
+            <div class="admin-grid">
+                <div class="admin-panel">
+                    <div class="panel-header">
+                        <span class="panel-title"><i class="fa-solid fa-pen-nib"></i> New Post</span>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="form-label">Title *</label>
+                            <input type="text" id="postTitle" class="form-input" placeholder="Article title">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Cover Image URL</label>
+                            <input type="text" id="postImage" class="form-input" placeholder="https://images.unsplash.com/...">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Excerpt</label>
+                            <textarea id="postExcerpt" class="form-input form-textarea" placeholder="Brief description..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Content Type</label>
+                            <div class="method-toggle">
+                                <button onclick="NexoviaApp.setMethod('link')" id="methodLink" class="method-btn active">
+                                    <i class="fa-solid fa-link"></i> External Link
+                                </button>
+                                <button onclick="NexoviaApp.setMethod('article')" id="methodArticle" class="method-btn">
+                                    <i class="fa-solid fa-file-lines"></i> Rich Text
+                                </button>
+                            </div>
+                            <div id="linkInputArea">
+                                <input type="text" id="docLink" class="form-input" placeholder="Paste external URL...">
+                            </div>
+                            <div id="quillArea" class="hidden">
+                                <div class="quill-wrapper"><div id="editor"></div></div>
+                            </div>
+                        </div>
+                        <button onclick="NexoviaApp.savePost()" class="btn btn-primary">
+                            <i class="fa-solid fa-rocket"></i> Publish Post
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-panel">
+                    <div class="panel-header">
+                        <span class="panel-title"><i class="fa-solid fa-folder-open"></i> Published Posts</span>
+                        <span class="panel-badge" id="postCount2">0 posts</span>
+                    </div>
+                    <div class="posts-list" id="adminTableBody"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article View -->
+    <div id="articleView" class="article-view hidden">
+        <div class="article-container">
+            <button onclick="NexoviaApp.closeArticle()" class="article-back">
+                <i class="fa-solid fa-arrow-left"></i> Back to Blog
+            </button>
+            <div id="articleContent"></div>
+        </div>
+    </div>
+
+    <script>
+    /**
+     * ╔═══════════════════════════════════════════════════════════════╗
+     * ║  NEXOVIA BLOG CMS - SECURE EDITION                            ║
+     * ║  SHA-256 + Salt + Base64 Cipher Authentication                ║
+     * ║  DevTools Protection with Admin Bypass                        ║
+     * ╚═══════════════════════════════════════════════════════════════╝
+     */
+
+    const NexoviaApp = (function() {
+        'use strict';
+
+        // ════════════════════════════════════════════════════════════
+        // SECURITY CONFIGURATION
+        // ════════════════════════════════════════════════════════════
+        
+               const AUTH_VAULT = {
+            u: 'YXJ6b28=',  
+            p: 'TmV4dXMjVm9pZEA2NjM='  
+        };
+
+	const SALT = 'nexovia_secure_2024';  // ← ADD THIS LINE!
+        
+        // Session token for admin bypass
+        const ADMIN_SESSION_KEY = 'nxv_admin_session_' + Date.now().toString(36);
+
+        let posts = [];
+        let postMethod = 'link';
+        let quill = null;
+        let isAdmin = false;
+        let devToolsCheckInterval = null;
+
+        // ════════════════════════════════════════════════════════════
+        // CRYPTOGRAPHIC FUNCTIONS
+        // ════════════════════════════════════════════════════════════
+        
+        // SHA-256 hash function
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        // Decode vault credentials
+        function decodeVault(encoded) {
+            try {
+                return atob(encoded);
+            } catch(e) {
+                return '';
+            }
+        }
+        
+        // Generate session hash for secure session tokens
+        async function generateSessionHash(input) {
+            const salted = input + SALT + Date.now();
+            return await sha256(salted);
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // DEVTOOLS PROTECTION
+        // ════════════════════════════════════════════════════════════
+        
+        let devToolsOpen = false;
+        let devToolsTimer = null;
+        let warningShown = false;
+
+        function checkDevTools() {
+            // Skip if admin is logged in
+            if (isAdmin || sessionStorage.getItem('nexovia_admin') === 'true') {
+                return;
+            }
+
+            const widthThreshold = window.outerWidth - window.innerWidth > 160;
+            const heightThreshold = window.outerHeight - window.innerHeight > 160;
+            
+            // Check using console timing
+            const startTime = performance.now();
+            console.log('%c', 'font-size:0;');
+            console.clear();
+            const endTime = performance.now();
+            const consoleOpen = endTime - startTime > 100;
+
+            if (widthThreshold || heightThreshold || consoleOpen) {
+                if (!devToolsOpen) {
+                    devToolsOpen = true;
+                    startDevToolsCountdown();
+                }
+            } else {
+                if (devToolsOpen) {
+                    devToolsOpen = false;
+                    cancelDevToolsCountdown();
+                }
+            }
+        }
+
+        function startDevToolsCountdown() {
+            if (warningShown) return;
+            warningShown = true;
+
+            // Create warning overlay
+            const overlay = document.createElement('div');
+            overlay.id = 'devtoolsWarning';
+            overlay.className = 'devtools-warning';
+            overlay.innerHTML = `
+                <h1>⚠ SECURITY ALERT</h1>
+                <p>Developer tools detected. Close them immediately.</p>
+                <div class="countdown" id="dtCountdown">3</div>
+                <p>Page will reload...</p>
+            `;
+            document.body.appendChild(overlay);
+
+            let count = 3;
+            devToolsTimer = setInterval(() => {
+                count--;
+                const countdownEl = document.getElementById('dtCountdown');
+                if (countdownEl) countdownEl.textContent = count;
+                
+                if (count <= 0) {
+                    clearInterval(devToolsTimer);
+                    killPage();
+                }
+            }, 1000);
+        }
+
+        function cancelDevToolsCountdown() {
+            warningShown = false;
+            if (devToolsTimer) {
+                clearInterval(devToolsTimer);
+                devToolsTimer = null;
+            }
+            const overlay = document.getElementById('devtoolsWarning');
+            if (overlay) overlay.remove();
+        }
+
+        function killPage() {
+            // Clear sensitive data
+            document.body.innerHTML = '';
+            document.head.innerHTML = '';
+            
+            // Reload page
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
+        }
+
+        function disableSourceView() {
+            // Skip if admin
+            if (isAdmin || sessionStorage.getItem('nexovia_admin') === 'true') {
+                return;
+            }
+
+            // Disable right-click
+            document.addEventListener('contextmenu', function(e) {
+                if (!isAdmin && sessionStorage.getItem('nexovia_admin') !== 'true') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+            // Disable keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (isAdmin || sessionStorage.getItem('nexovia_admin') === 'true') {
+                    return true;
+                }
+
+                // F12
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+Shift+I (DevTools)
+                if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+Shift+J (Console)
+                if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+Shift+C (Inspect)
+                if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+U (View Source)
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                    return false;
+                }
+                
+                // Ctrl+S (Save)
+                if (e.ctrlKey && e.key === 's') {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        }
+
+        function startDevToolsMonitor() {
+            // Check every 500ms
+            devToolsCheckInterval = setInterval(checkDevTools, 500);
+        }
+
+        function stopDevToolsMonitor() {
+            if (devToolsCheckInterval) {
+                clearInterval(devToolsCheckInterval);
+                devToolsCheckInterval = null;
+            }
+            cancelDevToolsCountdown();
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // SECRET ACCESS (Konami Code + Logo Tap)
+        // ════════════════════════════════════════════════════════════
+        
+        const KONAMI_CODE = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','KeyB','KeyA'];
+        let konamiIndex = 0;
+        let konamiTimer = null;
+
+        function checkKonami(e) {
+            if (konamiTimer) clearTimeout(konamiTimer);
+            konamiTimer = setTimeout(() => { konamiIndex = 0; }, 5000);
+
+            if (e.code === KONAMI_CODE[konamiIndex]) {
+                konamiIndex++;
+                if (konamiIndex === KONAMI_CODE.length) {
+                    konamiIndex = 0;
+                    clearTimeout(konamiTimer);
+                    activateSecret();
+                }
+            } else {
+                konamiIndex = 0;
+            }
+        }
+
+        function activateSecret() {
+            document.body.classList.add('konami-flash');
+            setTimeout(() => document.body.classList.remove('konami-flash'), 600);
+            showToast('System access unlocked');
+            setTimeout(showLogin, 800);
+        }
+
+        function showToast(message) {
+            const existing = document.querySelector('.konami-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'konami-toast';
+            toast.innerHTML = `<i class="fa-solid fa-unlock"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 50);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 2500);
+        }
+
+        // Logo Tap (7 taps)
+        const LogoTap = {
+            count: 0,
+            timeout: null,
+            required: 7,
+            counter: null,
+
+            init() {
+                const logo = document.getElementById('logoTrigger');
+                if (!logo) return;
+
+                this.createCounter();
+                logo.addEventListener('click', (e) => this.handleTap(e));
+                logo.addEventListener('touchend', (e) => this.handleTap(e));
+            },
+
+            createCounter() {
+                this.counter = document.createElement('div');
+                this.counter.className = 'tap-counter';
+                this.counter.innerHTML = `<span class="text">Keep tapping...</span><span class="dots">${Array(this.required).fill('<span class="dot"></span>').join('')}</span>`;
+                document.body.appendChild(this.counter);
+            },
+
+            handleTap(e) {
+                e.preventDefault();
+                this.count++;
+
+                const logo = document.getElementById('logoTrigger');
+                logo.classList.remove('logo-pulse');
+                void logo.offsetWidth;
+                logo.classList.add('logo-pulse');
+
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => this.reset(), 2000);
+
+                if (this.count >= 3) {
+                    this.counter.classList.add('visible');
+                    this.updateCounter();
+                    this.updateTagline();
+                }
+
+                if (this.count >= this.required) {
+                    this.unlock();
+                }
+            },
+
+            updateCounter() {
+                const dots = this.counter.querySelectorAll('.dot');
+                const text = this.counter.querySelector('.text');
+                dots.forEach((dot, i) => dot.classList.toggle('filled', i < this.count));
+                const remaining = this.required - this.count;
+                if (remaining <= 3 && remaining > 0) text.textContent = `${remaining} more...`;
+                else if (remaining <= 0) text.textContent = 'Unlocked!';
+            },
+
+            updateTagline() {
+                const tagline = document.getElementById('taglineHint');
+                if (!tagline) return;
+                tagline.classList.add('counting');
+                const remaining = this.required - this.count;
+                if (remaining <= 3 && remaining > 0) tagline.textContent = `${remaining} more taps...`;
+            },
+
+            reset() {
+                this.count = 0;
+                this.counter.classList.remove('visible');
+                const tagline = document.getElementById('taglineHint');
+                if (tagline) {
+                    tagline.classList.remove('counting', 'unlocked');
+                    tagline.textContent = 'digistudio';
+                }
+                this.counter.querySelectorAll('.dot').forEach(dot => dot.classList.remove('filled'));
+                this.counter.querySelector('.text').textContent = 'Keep tapping...';
+            },
+
+            unlock() {
+                const tagline = document.getElementById('taglineHint');
+                if (tagline) {
+                    tagline.classList.remove('counting');
+                    tagline.classList.add('unlocked');
+                    tagline.textContent = '✓ unlocked';
+                }
+                setTimeout(() => this.counter.classList.remove('visible'), 500);
+                activateSecret();
+                setTimeout(() => this.reset(), 1000);
+            }
+        };
+
+        // ════════════════════════════════════════════════════════════
+        // AUTHENTICATION
+        // ════════════════════════════════════════════════════════════
+        
+        async function handleLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorEl = document.getElementById('loginError');
+
+            if (!username || !password) {
+                errorEl.textContent = 'Please enter credentials.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            try {
+                // Decode the vault credentials
+                const validUser = decodeVault(AUTH_VAULT.u);
+                const validPass = decodeVault(AUTH_VAULT.p);
+                
+                // Generate hashes for comparison (timing-safe)
+                const inputUserHash = await sha256(username.toLowerCase() + SALT);
+                const inputPassHash = await sha256(password + SALT);
+                const validUserHash = await sha256(validUser + SALT);
+                const validPassHash = await sha256(validPass + SALT);
+
+                // Debug log (remove in production)
+                console.log('%c[nexovia] Validating credentials...', 'color: #6EE7FF;');
+                
+                // Compare hashes (not plain text)
+                if (inputUserHash === validUserHash && inputPassHash === validPassHash) {
+                    // Success
+                    isAdmin = true;
+                    const sessionToken = await generateSessionHash(username);
+                    sessionStorage.setItem('nexovia_admin', 'true');
+                    sessionStorage.setItem('nexovia_session', sessionToken);
+                    
+                    // Stop DevTools protection for admin
+                    stopDevToolsMonitor();
+                    
+                    hideLogin();
+                    updateNav();
+                    showView('admin');
+                    
+                    showToast('Admin access granted');
+                } else {
+                    errorEl.textContent = 'Access denied. Invalid credentials.';
+                    errorEl.classList.add('show');
+                    
+                    // Clear password field
+                    document.getElementById('password').value = '';
+                }
+            } catch (err) {
+                console.error('Auth error:', err);
+                errorEl.textContent = 'Authentication error.';
+                errorEl.classList.add('show');
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginError').classList.remove('show');
+            document.getElementById('username').focus();
+        }
+
+        function hideLogin() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('loginError').classList.remove('show');
+        }
+
+        function logout() {
+            isAdmin = false;
+            sessionStorage.removeItem('nexovia_admin');
+            sessionStorage.removeItem('nexovia_session');
+            
+            // Restart protection
+            startDevToolsMonitor();
+            
+            location.reload();
+        }
+
+        function updateNav() {
+            isAdmin = sessionStorage.getItem('nexovia_admin') === 'true';
+            const secretNav = document.getElementById('secretAdminNav');
+            if (secretNav) secretNav.classList.toggle('hidden', !isAdmin);
+            
+            // If admin, stop DevTools protection
+            if (isAdmin) {
+                stopDevToolsMonitor();
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // DATA MANAGEMENT
+        // ════════════════════════════════════════════════════════════
+        
+        const STORAGE_KEY = 'nexoviaBlogPosts';
+        const CACHE_VERSION_KEY = 'nexoviaBlogVersion';
+        const CURRENT_VERSION = '1.0.0'; // Increment to force refresh from JSON
+        
+        async function loadData() {
+            const savedVersion = localStorage.getItem(CACHE_VERSION_KEY);
+            const saved = localStorage.getItem(STORAGE_KEY);
+            
+            // If we have cached data AND version matches, use cache
+            if (saved && savedVersion === CURRENT_VERSION) {
+                posts = JSON.parse(saved);
+                console.log('%c[nexovia] ✓ Loaded from cache (' + posts.length + ' posts)', 'color: #3DDC97;');
+            } else {
+                // Fetch fresh data from JSON file
+                try {
+                    // Add cache-busting for GitHub Pages
+                    const cacheBuster = '?v=' + Date.now();
+                    const response = await fetch('blogPosts.json' + cacheBuster);
+                    
+                    if (response.ok) {
+                        posts = await response.json();
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+                        localStorage.setItem(CACHE_VERSION_KEY, CURRENT_VERSION);
+                        console.log('%c[nexovia] ✓ Loaded from server (' + posts.length + ' posts)', 'color: #6EE7FF;');
+                    } else {
+                        throw new Error('JSON not found');
+                    }
+                } catch (e) {
+                    console.log('%c[nexovia] ⚠ No blogPosts.json found, starting fresh', 'color: #FFA500;');
+                    // If fetch fails but we have old cache, use it
+                    if (saved) {
+                        posts = JSON.parse(saved);
+                        console.log('%c[nexovia] ↩ Using cached data as fallback', 'color: #9A9A9A;');
+                    }
+                }
+            }
+            
+            renderPortfolio();
+            renderAdminTable();
+            updateStats();
+        }
+        
+        // Force refresh from JSON (useful for admins)
+        function forceRefresh() {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(CACHE_VERSION_KEY);
+            location.reload();
+        }
+
+        function saveData() {
+            localStorage.setItem('nexoviaBlogPosts', JSON.stringify(posts));
+        }
+
+        function updateStats() {
+            document.getElementById('articleCount').textContent = posts.length;
+            if (posts.length > 0) {
+                const latest = new Date(Math.max(...posts.map(p => p.id)));
+                document.getElementById('lastUpdated').textContent = 
+                    `${latest.getFullYear()}.${String(latest.getMonth() + 1).padStart(2, '0')}.${String(latest.getDate()).padStart(2, '0')}`;
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // QUILL EDITOR
+        // ════════════════════════════════════════════════════════════
+        
+        function initQuill() {
+            if (quill) return;
+            quill = new Quill('#editor', {
+                theme: 'snow',
+                placeholder: 'Write your article...',
+                modules: {
+                    toolbar: [
+                        [{ 'header': [1, 2, 3, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        ['blockquote', 'code-block'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'align': [] }],
+                        ['link', 'image', 'video'],
+                        ['clean']
+                    ]
+                }
+            });
+        }
+
+        function setMethod(method) {
+            postMethod = method;
+            document.getElementById('linkInputArea').classList.toggle('hidden', method !== 'link');
+            document.getElementById('quillArea').classList.toggle('hidden', method !== 'article');
+            document.getElementById('methodLink').classList.toggle('active', method === 'link');
+            document.getElementById('methodArticle').classList.toggle('active', method === 'article');
+            if (method === 'article') setTimeout(initQuill, 100);
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // POST MANAGEMENT
+        // ════════════════════════════════════════════════════════════
+        
+        function savePost() {
+            const title = document.getElementById('postTitle').value.trim();
+            if (!title) { alert('Please enter a title'); return; }
+
+            const newPost = {
+                id: Date.now(),
+                title: title,
+                image: document.getElementById('postImage').value || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800',
+                excerpt: document.getElementById('postExcerpt').value,
+                type: postMethod,
+                content: postMethod === 'link' ? document.getElementById('docLink').value : quill.root.innerHTML
+            };
+
+            posts.unshift(newPost);
+            saveData();
+            renderAdminTable();
+            updateStats();
+
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postImage').value = '';
+            document.getElementById('postExcerpt').value = '';
+            document.getElementById('docLink').value = '';
+            if (quill) quill.setContents([]);
+
+            showToast('Post published!');
+        }
+
+        function deletePost(id) {
+            if (confirm('Delete this post permanently?')) {
+                posts = posts.filter(p => p.id !== id);
+                saveData();
+                renderAdminTable();
+                renderPortfolio();
+                updateStats();
+            }
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // RENDER FUNCTIONS
+        // ════════════════════════════════════════════════════════════
+        
+        function renderPortfolio() {
+            const grid = document.getElementById('portfolioGrid');
+            if (posts.length === 0) {
+                grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon"><i class="fa-solid fa-folder-open"></i></div><h3>No posts yet</h3><p>Published articles will appear here.</p></div>`;
+                return;
+            }
+            grid.innerHTML = posts.map(post => `
+                <article class="blog-card">
+                    <div class="blog-card-image">
+                        <img src="${post.image}" alt="${post.title}" loading="lazy">
+                        <span class="blog-card-type">${post.type === 'link' ? 'External' : 'Article'}</span>
+                    </div>
+                    <div class="blog-card-content">
+                        <h3 class="blog-card-title">${post.title}</h3>
+                        <p class="blog-card-excerpt">${post.excerpt || 'No description available.'}</p>
+                        <div class="blog-card-footer">
+                            <span style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted);">
+                                ${new Date(post.id).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                            </span>
+                            <button onclick="NexoviaApp.openContent(${post.id})" class="read-more">
+                                ${post.type === 'link' ? 'Open Link' : 'Read'} →
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        function renderAdminTable() {
+            const count = posts.length;
+            document.getElementById('postCount2').textContent = `${count} post${count !== 1 ? 's' : ''}`;
+            const body = document.getElementById('adminTableBody');
+            if (posts.length === 0) {
+                body.innerHTML = `<div style="padding: var(--space-xl); text-align: center; color: var(--text-muted);"><i class="fa-solid fa-inbox" style="font-size: 2rem; opacity: 0.3; margin-bottom: var(--space-sm);"></i><p>No posts yet</p></div>`;
+                return;
+            }
+            body.innerHTML = posts.map(post => `
+                <div class="post-item">
+                    <div class="post-info">
+                        <h4>${post.title}</h4>
+                        <span class="post-meta">${post.type} • ${new Date(post.id).toLocaleDateString()}</span>
+                    </div>
+                    <button onclick="NexoviaApp.deletePost(${post.id})" class="post-delete" title="Delete">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // ARTICLE VIEWER
+        // ════════════════════════════════════════════════════════════
+        
+        function openContent(id) {
+            const post = posts.find(p => p.id === id);
+            if (!post) return;
+            if (post.type === 'link') {
+                window.open(post.content, '_blank');
+            } else {
+                document.getElementById('articleContent').innerHTML = `
+                    <article class="article-header">
+                        <h1>${post.title}</h1>
+                        <p style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">
+                            Published ${new Date(post.id).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        </p>
+                    </article>
+                    <img src="${post.image}" alt="${post.title}" class="article-cover">
+                    <div class="article-body">${post.content}</div>
+                `;
+                document.getElementById('articleView').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeArticle() {
+            document.getElementById('articleView').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // IMPORT/EXPORT
+        // ════════════════════════════════════════════════════════════
+        
+        function exportData() {
+            // Sort by ID (newest first) and format nicely
+            const sortedPosts = [...posts].sort((a, b) => b.id - a.id);
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sortedPosts, null, 2));
+            const dl = document.createElement('a');
+            dl.setAttribute("href", dataStr);
+            dl.setAttribute("download", "blogPosts.json");
+            dl.click();
+            
+            showToast('Exported! Replace blogPosts.json in your repo');
+        }
+        
+        // Sync status check
+        async function checkSyncStatus() {
+            try {
+                const response = await fetch('blogPosts.json?v=' + Date.now());
+                if (response.ok) {
+                    const serverPosts = await response.json();
+                    const localPosts = posts;
+                    
+                    if (serverPosts.length !== localPosts.length) {
+                        return { synced: false, server: serverPosts.length, local: localPosts.length };
+                    }
+                    return { synced: true };
+                }
+            } catch (e) {
+                return { synced: true, error: true };
+            }
+            return { synced: true };
+        }
+
+        function importData() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = e => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    try {
+                        const parsed = JSON.parse(ev.target.result);
+                        if (Array.isArray(parsed)) {
+                            posts = parsed;
+                            saveData();
+                            renderPortfolio();
+                            renderAdminTable();
+                            updateStats();
+                            showToast(`Imported ${posts.length} posts!`);
+                        }
+                    } catch (err) { alert('Invalid JSON file'); }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // VIEW MANAGEMENT
+        // ════════════════════════════════════════════════════════════
+        
+        function showView(view) {
+            document.getElementById('publicView').classList.toggle('hidden', view !== 'public');
+            document.getElementById('adminView').classList.toggle('hidden', view !== 'admin');
+            if (view === 'public') renderPortfolio();
+            if (view === 'admin') { if (!quill) initQuill(); renderAdminTable(); }
+        }
+
+        // ════════════════════════════════════════════════════════════
+        // INITIALIZATION
+        // ════════════════════════════════════════════════════════════
+        
+        function init() {
+            console.log('%c╔═══════════════════════════════════════════════════════╗', 'color: #6EE7FF;');
+            console.log('%c║   NEXOVIA BLOG CMS - VAULT EDITION                    ║', 'color: #6EE7FF;');
+            console.log('%c║   Secure Auth + DevTools Protection                   ║', 'color: #6EE7FF;');
+            console.log('%c╚═══════════════════════════════════════════════════════╝', 'color: #6EE7FF;');
+
+            // Load data
+            loadData();
+            updateNav();
+            
+            // Initialize secret access
+            document.addEventListener('keydown', checkKonami);
+            LogoTap.init();
+            
+            // Mobile nav
+            const navToggle = document.querySelector('.nav-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            if (navToggle && navLinks) {
+                navToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+            }
+
+            // Keyboard shortcuts
+            document.getElementById('password').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (!document.getElementById('articleView').classList.contains('hidden')) closeArticle();
+                    if (!document.getElementById('loginModal').classList.contains('hidden')) hideLogin();
+                }
+            });
+
+            // Start protection if not admin
+            if (sessionStorage.getItem('nexovia_admin') !== 'true') {
+                disableSourceView();
+                startDevToolsMonitor();
+            } else {
+                isAdmin = true;
+            }
+
+            console.log('%c[nexovia] 🔐 System ready', 'color: #3DDC97;');
+            console.log('');
+            console.log('%c[nexovia] 🎮 Desktop: ↑↑↓↓←→←→BA', 'color: #9A9A9A;');
+            console.log('%c[nexovia] 📱 Mobile: Tap logo 7 times', 'color: #9A9A9A;');
+        }
+
+        // Run on DOM ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+
+        // Public API
+        return {
+            handleLogin,
+            showLogin,
+            hideLogin,
+            logout,
+            showView,
+            setMethod,
+            savePost,
+            deletePost,
+            openContent,
+            closeArticle,
+            exportData,
+            importData,
+            forceRefresh,
+            checkSyncStatus
+        };
+
+    })();
+    </script>
+</body>
+</html>
